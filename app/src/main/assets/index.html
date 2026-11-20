@@ -3,55 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LEO CAT</title>
+    <title>Leo Cat</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Galada&family=Hind+Siliguri:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-user-select: none; }
-        html, body { width: 100%; height: 100%; background-color: #000; display: flex; align-items: center; justify-content: center; overflow: hidden; font-family: 'Hind Siliguri', sans-serif; }
+        html, body {
+            width: 100%; height: 100%; background-color: #000;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden; font-family: 'Hind Siliguri', sans-serif;
+        }
         #gameContainer { position: relative; width: 100vw; height: 100vh; overflow: hidden; }
         canvas { display: block; width: 100%; height: 100%; }
-        #uiOverlay { position: absolute; top: 14px; right: 20px; display: none; align-items: center; gap: 16px; font-size: 20px; font-weight: bold; font-family: 'Courier New', monospace; color: #1b2631; background: rgba(255, 255, 255, 0.88); padding: 6px 14px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.18); }
-        #livesDisplay { font-size: 19px; letter-spacing: 2px; }
-        #controls { position: absolute; top: 14px; left: 18px; z-index: 5; display: none; }
-        .top-btn { background: #2e7d32; color: white; border: 2px solid #1b5e20; padding: 7px 13px; border-radius: 8px; cursor: pointer; font-family: 'Hind Siliguri', sans-serif; font-size: 14px; font-weight: 700; }
-        #messageBox { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; background: linear-gradient(145deg, rgba(255, 255, 255, 0.97), rgba(241, 248, 233, 0.96)); padding: 18px 24px; border-radius: 18px; border: 3px solid #2e7d32; box-shadow: 0 12px 32px rgba(0,0,0,0.32); z-index: 10; min-width: 500px; max-width: 94vw; display: none; }
-        #msgTitle { font-family: 'Galada', 'Hind Siliguri', cursive; color: #1b5e20; margin-bottom: 4px; font-size: 28px; }
+        #uiOverlay {
+            position: absolute; top: 14px; right: 20px; display: none;
+            align-items: center; gap: 14px; font-size: 19px; font-weight: bold;
+            font-family: 'Courier New', Courier, monospace; color: #1b2631;
+            background: rgba(255, 255, 255, 0.88); padding: 6px 14px;
+            border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+            z-index: 5;
+        }
+        #livesDisplay { font-size: 18px; letter-spacing: 2px; }
+        #controls {
+            position: absolute; top: 14px; left: 16px; z-index: 6;
+            display: none; gap: 8px; flex-wrap: wrap;
+        }
+        .top-btn {
+            background: #2e7d32; color: white; border: 2px solid #1b5e20;
+            padding: 6px 12px; border-radius: 8px; cursor: pointer;
+            font-family: 'Hind Siliguri', sans-serif; font-size: 14px; font-weight: 700;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.22);
+            transition: transform 0.1s;
+        }
+        .top-btn:active { transform: scale(0.95); }
+        .top-btn.fps-btn { background: #1565c0; border-color: #0d47a1; }
+        .top-btn.about-btn { background: #6a1b9a; border-color: #4a148c; }
+
+        #messageBox {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            text-align: center;
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.97), rgba(241, 248, 233, 0.96));
+            padding: 18px 24px; border-radius: 18px; border: 3px solid #2e7d32;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.32); z-index: 10;
+            min-width: 500px; max-width: 94vw; display: none;
+        }
+        #msgTitle {
+            font-family: 'Galada', 'Hind Siliguri', cursive; color: #1b5e20;
+            margin-bottom: 4px; font-size: 28px;
+        }
         #msgSub { color: #37474f; font-size: 15px; font-weight: 600; margin-bottom: 10px; }
         .rules-grid { display: flex; justify-content: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
-        .rule-card { background: #ffffff; border: 2px solid #a5d6a7; border-radius: 12px; padding: 6px 9px; min-width: 108px; display: flex; flex-direction: column; align-items: center; }
+        .rule-card {
+            background: #ffffff; border: 2px solid #a5d6a7; border-radius: 12px;
+            padding: 6px 9px; min-width: 108px; display: flex; flex-direction: column; align-items: center;
+        }
         .rule-card.danger-card { border-color: #ef9a9a; background: #fff8f8; }
         .rule-icon { font-size: 19px; margin-bottom: 2px; }
         .rule-label { font-size: 12px; font-weight: 600; color: #455a64; }
-        .rule-point { font-size: 14px; font-weight: 700; color: #e65100; background: #fff3e0; padding: 1px 8px; border-radius: 20px; margin-top: 2px; }
+        .rule-point {
+            font-size: 14px; font-weight: 700; color: #e65100;
+            background: #fff3e0; padding: 1px 8px; border-radius: 20px; margin-top: 2px;
+        }
         .rule-point.danger-badge { color: #c62828; background: #ffebee; }
         .mode-prompt { font-size: 15px; font-weight: 700; color: #1b5e20; margin-bottom: 8px; }
         .mode-buttons { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
-        .mode-btn { color: #fff; border: 2px solid rgba(0,0,0,0.25); padding: 9px 16px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: 'Hind Siliguri', sans-serif; }
-        .mode-btn.mouse-btn { background: #455a64; }
-        .mode-btn.chicken-btn { background: #bf360c; }
-        .mode-btn.chicks-btn { background: #f9a825; color: #1b2631; }
+        .mode-btn {
+            color: #fff; border: 2px solid rgba(0,0,0,0.25); padding: 9px 16px;
+            border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer;
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+        .mode-btn.mouse-btn { background: #455a64; border-color: #263238; }
+        .mode-btn.chicken-btn { background: #bf360c; border-color: #870000; }
+        .mode-btn.chicks-btn { background: #f9a825; color: #1b2631; border-color: #c17900; }
+
+        /* About সেকশন (after_intro.jpg ব্যাকগ্রাউন্ড ও হালকা কালো আভা) */
+        #aboutOverlay {
+            position: fixed; inset: 0;
+            background: url('after_intro.jpg') center center / cover no-repeat;
+            z-index: 50; display: none;
+            align-items: center; justify-content: center;
+            padding: 16px;
+        }
+        .about-dark-backdrop {
+            position: absolute; inset: 0;
+            background: rgba(0, 0, 0, 0.72);
+            backdrop-filter: blur(3px);
+        }
+        .about-card {
+            position: relative; z-index: 2;
+            max-width: 760px; width: 95%; max-height: 90vh; overflow-y: auto;
+            background: rgba(15, 23, 30, 0.65);
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            border-radius: 16px; padding: 20px 26px;
+            color: #ffffff; text-align: center;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.6);
+        }
+        .about-card h2 {
+            font-size: 22px; color: #ffeb3b; margin-bottom: 10px;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+        }
+        .about-card p {
+            font-size: 14.5px; line-height: 1.55; color: #f5f5f5;
+            margin-bottom: 10px; text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+        }
+        .about-badge {
+            display: inline-block; background: rgba(46, 125, 50, 0.85);
+            border: 1px solid #81c784; color: #fff;
+            padding: 5px 14px; border-radius: 20px; font-weight: 700;
+            font-size: 14px; margin: 6px 0 12px 0;
+        }
+        .about-features {
+            background: rgba(0, 0, 0, 0.45);
+            border-radius: 10px; padding: 10px 14px;
+            margin-bottom: 14px; text-align: left; font-size: 14px;
+            border-left: 4px solid #4caf50;
+        }
+        .close-about-btn {
+            background: #e53935; color: #fff; border: 2px solid #b71c1c;
+            padding: 8px 22px; border-radius: 10px; font-size: 15px;
+            font-weight: 700; cursor: pointer; font-family: 'Hind Siliguri', sans-serif;
+        }
     </style>
 </head>
 <body>
 
 <div id="gameContainer">
-    <div id="controls"><button id="muteBtn" class="top-btn">🔊 Sound: ON</button></div>
+    <div id="controls">
+        <button id="muteBtn" class="top-btn">🔊 Sound: ON</button>
+        <button id="fpsBtn" class="top-btn fps-btn">⚡ FPS: 60</button>
+        <button id="aboutBtn" class="top-btn about-btn">ℹ️ About</button>
+    </div>
     <div id="uiOverlay">
-        <div id="livesDisplay">❤️❤️❤️</div>
+        <div id="livesDisplay" title="লাইফ লাইন">❤️❤️❤️</div>
         <div>HI <span id="highScore">00000</span></div>
         <div id="score">00000</div>
     </div>
-    <canvas id="gameCanvas"></canvas>
+    <canvas id="gameCanvas" width="540" height="960"></canvas>
     <div id="messageBox">
         <h2 id="msgTitle">লিওর দৌড়ঝাঁপ 🐾</h2>
         <p id="msgSub" style="display: none;"></p>
         <div class="rules-grid">
-            <div class="rule-card"><div class="rule-icon">🐛🐞🐝🪲</div><div class="rule-label">পোকা টাচ করলে</div><div class="rule-point">+১ পয়েন্ট</div></div>
-            <div class="rule-card"><div class="rule-icon">🧀</div><div class="rule-label">পনির টাচ করলে</div><div class="rule-point">+২ পয়েন্ট</div></div>
-            <div class="rule-card"><div class="rule-icon">🐈💨</div><div class="rule-label">লাফ দিলে</div><div class="rule-point">+৩ পয়েন্ট</div></div>
-            <div class="rule-card danger-card"><div class="rule-icon">🌵💔</div><div class="rule-label">ক্যাকটাস টাচ করলে</div><div class="rule-point danger-badge">খেল খতম (৩টি লাইফ)</div></div>
+            <div class="rule-card">
+                <div class="rule-icon">🐛🐞🐝🪲</div>
+                <div class="rule-label">পোকা টাচ করলে</div>
+                <div class="rule-point">+১ পয়েন্ট</div>
+            </div>
+            <div class="rule-card">
+                <div class="rule-icon">🧀</div>
+                <div class="rule-label">পনির টাচ করলে</div>
+                <div class="rule-point">+২ পয়েন্ট</div>
+            </div>
+            <div class="rule-card">
+                <div class="rule-icon">🐈💨</div>
+                <div class="rule-label">লাফ দিলে</div>
+                <div class="rule-point">+৩ পয়েন্ট</div>
+            </div>
+            <div class="rule-card danger-card">
+                <div class="rule-icon">🌵💔</div>
+                <div class="rule-label">ক্যাকটাস টাচ করলে</div>
+                <div class="rule-point danger-badge">খেল খতম (৩টি লাইফ)</div>
+            </div>
         </div>
         <div class="mode-prompt">খেলার মোড বেছে নিন:</div>
         <div class="mode-buttons">
@@ -59,6 +171,23 @@
             <button id="btnChickenMode" class="mode-btn chicken-btn">🐔 দেশি মুরগি</button>
             <button id="btnChicksMode" class="mode-btn chicks-btn">🐤 মুরগির বাচ্চা</button>
         </div>
+    </div>
+</div>
+
+<!-- About ওভারলে -->
+<div id="aboutOverlay">
+    <div class="about-dark-backdrop"></div>
+    <div class="about-card">
+        <h2>About Leo Cat 🐾</h2>
+        <p>Experience the future of technology with this 100% AI-Built App, crafted using the power of Google Gemini. Designed with precision and innovation, this is a proud Fully Bangladeshi App built to deliver a seamless, fast, and user-friendly experience.</p>
+        <div class="about-badge">Proudly Made in Bangladesh 🇧🇩 | Powered by Google Gemini</div>
+        <p>আধুনিক প্রযুক্তির ছোঁয়ায় তৈরি এটি একটি সম্পূর্ণ AI-Built App, যা Google Gemini-এর সহায়তায় ডেভেলপ করা হয়েছে। ব্যবহারকারীদের সহজ ও স্মার্ট অভিজ্ঞতা দেওয়ার লক্ষ্যে তৈরি এটি একটি Fully Bangladeshi App।</p>
+        <div class="about-features">
+            <strong>মূল বৈশিষ্ট্য:</strong><br>
+            • <strong>Fully AI-Built:</strong> গুগল জেমিনি (Google Gemini) দিয়ে তৈরি।<br>
+            • <strong>100% Bangladeshi:</strong> গর্বের সাথে বাংলাদেশে তৈরি 🇧🇩।
+        </div>
+        <button id="closeAboutBtn" class="close-about-btn">✖ বন্ধ করুন (Close)</button>
     </div>
 </div>
 
@@ -72,46 +201,21 @@ const messageBox = document.getElementById('messageBox');
 const msgTitle = document.getElementById('msgTitle');
 const msgSub = document.getElementById('msgSub');
 const muteBtn = document.getElementById('muteBtn');
-
-// ক্যানভাস রেজোলিউশন ওরিয়েন্টেশন অনুযায়ী সেট করা (যাতে ছবি চ্যাপ্টা না হয়)
-function resizeCanvas() {
-    if (window.innerHeight > window.innerWidth) {
-        // Portrait (9:16)
-        canvas.width = 540;
-        canvas.height = 960;
-    } else {
-        // Landscape (16:9)
-        canvas.width = 960;
-        canvas.height = 420;
-    }
-}
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
-
-// ছবিকে চ্যাপ্টা না করে আসল অনুপাতে (Contain/Cover) আঁকার ফাংশন
-function drawImageProperly(img) {
-    if (!img.complete || img.naturalWidth === 0) return;
-    const imgRatio = img.naturalWidth / img.naturalHeight;
-    const canvasRatio = canvas.width / canvas.height;
-    let drawW, drawH, drawX, drawY;
-
-    if (imgRatio > canvasRatio) {
-        drawW = canvas.width;
-        drawH = canvas.width / imgRatio;
-        drawX = 0;
-        drawY = (canvas.height - drawH) / 2;
-    } else {
-        drawH = canvas.height;
-        drawW = canvas.height * imgRatio;
-        drawX = (canvas.width - drawW) / 2;
-        drawY = 0;
-    }
-    ctx.drawImage(img, drawX, drawY, drawW, drawH);
-}
+const fpsBtn = document.getElementById('fpsBtn');
+const aboutBtn = document.getElementById('aboutBtn');
+const aboutOverlay = document.getElementById('aboutOverlay');
+const closeAboutBtn = document.getElementById('closeAboutBtn');
+const btnMouseMode = document.getElementById('btnMouseMode');
+const btnChickenMode = document.getElementById('btnChickenMode');
+const btnChicksMode = document.getElementById('btnChicksMode');
 
 const images = {
-    run1: new Image(), run2: new Image(), jump: new Image(), hurt: new Image(),
-    intro: new Image(), afterIntro: new Image()
+    run1: new Image(),
+    run2: new Image(),
+    jump: new Image(),
+    hurt: new Image(),
+    intro: new Image(),
+    afterIntro: new Image()
 };
 images.run1.src = 'cat_run1.png';
 images.run2.src = 'cat_run2.png';
@@ -129,6 +233,42 @@ beforeGamePlayAudio.loop = true;
 let audioCtx = null;
 let isMuted = false;
 let bgmInterval = null;
+
+// --- FPS কন্ট্রোল (30 / 60 / 120 FPS) ---
+const fpsOptions = [30, 60, 120];
+let currentFpsIndex = 1; // ডিফল্ট 60 FPS
+let targetFPS = fpsOptions[currentFpsIndex];
+let lastFrameTime = performance.now();
+
+fpsBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    currentFpsIndex = (currentFpsIndex + 1) % fpsOptions.length;
+    targetFPS = fpsOptions[currentFpsIndex];
+    fpsBtn.textContent = `⚡ FPS: ${targetFPS}`;
+});
+
+// --- About বাটন লজিক ---
+let stateBeforeAbout = 'LOBBY';
+aboutBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    stateBeforeAbout = gameState;
+    if (gameState === 'PLAYING') {
+        gameState = 'PAUSED';
+        stopBGM();
+    }
+    aboutOverlay.style.display = 'flex';
+});
+
+closeAboutBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    aboutOverlay.style.display = 'none';
+    if (stateBeforeAbout === 'PLAYING') {
+        gameState = 'PLAYING';
+        startBGM();
+    } else {
+        gameState = stateBeforeAbout;
+    }
+});
 
 function initAudio() {
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -152,32 +292,56 @@ function playTone(freq, type, duration, vol = 0.1) {
 function playMurgiSound() {
     if (isMuted) return;
     murgiAudio.currentTime = 0;
-    murgiAudio.play().catch(() => { playTone(440, 'sawtooth', 0.1, 0.08); setTimeout(() => playTone(520, 'sawtooth', 0.12, 0.08), 140); });
+    murgiAudio.play().catch(() => {});
 }
 
 function playBaccaSound() {
     if (isMuted) return;
     baccaAudio.currentTime = 0;
-    baccaAudio.play().catch(() => { playTone(1250, 'sine', 0.09, 0.08); setTimeout(() => playTone(1450, 'sine', 0.09, 0.08), 120); });
+    baccaAudio.play().catch(() => {});
 }
 
 function stopCustomAudios() {
-    [murgiAudio, baccaAudio, startingAudio, beforeGamePlayAudio].forEach(a => { a.pause(); a.currentTime = 0; });
+    [murgiAudio, baccaAudio, startingAudio, beforeGamePlayAudio].forEach(a => {
+        a.pause(); a.currentTime = 0;
+    });
 }
 
-function playJumpSound() { playTone(420, 'square', 0.12, 0.08); setTimeout(() => playTone(640, 'square', 0.15, 0.08), 60); }
-function playCollectSound(p) { if (p === 1) playTone(780, 'sine', 0.12, 0.12); else { playTone(650, 'triangle', 0.1, 0.12); setTimeout(() => playTone(980, 'triangle', 0.18, 0.12), 70); } }
-function playHitLifeSound() { playTone(260, 'sawtooth', 0.18, 0.14); setTimeout(() => playTone(180, 'sawtooth', 0.22, 0.14), 110); }
-function playGameOverSound() { playTone(300, 'sawtooth', 0.2, 0.12); setTimeout(() => playTone(190, 'sawtooth', 0.35, 0.12), 150); }
+function playJumpSound() {
+    playTone(420, 'square', 0.12, 0.08);
+    setTimeout(() => playTone(640, 'square', 0.15, 0.08), 60);
+}
+
+function playCollectSound(points) {
+    if (points === 1) playTone(780, 'sine', 0.12, 0.12);
+    else {
+        playTone(650, 'triangle', 0.1, 0.12);
+        setTimeout(() => playTone(980, 'triangle', 0.18, 0.12), 70);
+    }
+}
+
+function playHitLifeSound() {
+    playTone(260, 'sawtooth', 0.18, 0.14);
+    setTimeout(() => playTone(180, 'sawtooth', 0.22, 0.14), 110);
+}
+
+function playGameOverSound() {
+    playTone(300, 'sawtooth', 0.2, 0.12);
+    setTimeout(() => playTone(190, 'sawtooth', 0.35, 0.12), 150);
+}
 
 function startBGM() {
     stopBGM();
     const melody = [261.63, 329.63, 392.00, 329.63, 293.66, 349.23, 440.00, 349.23];
     let step = 0;
     bgmInterval = setInterval(() => {
-        if (!isMuted && gameState === 'PLAYING') { playTone(melody[step % melody.length], 'triangle', 0.18, 0.04); step++; }
+        if (!isMuted && gameState === 'PLAYING') {
+            playTone(melody[step % melody.length], 'triangle', 0.18, 0.04);
+            step++;
+        }
     }, 230);
 }
+
 function stopBGM() { if (bgmInterval) clearInterval(bgmInterval); }
 
 muteBtn.addEventListener('click', (e) => {
@@ -185,11 +349,10 @@ muteBtn.addEventListener('click', (e) => {
     isMuted = !isMuted;
     muteBtn.textContent = isMuted ? '🔇 Sound: OFF' : '🔊 Sound: ON';
     if (isMuted) stopCustomAudios();
-    else if (gameState === 'INTRO') startingAudio.play().catch(() => {});
-    else if (gameState === 'AFTER_INTRO' || gameState === 'LOBBY') beforeGamePlayAudio.play().catch(() => {});
+    else if (gameState === 'LOBBY') beforeGamePlayAudio.play().catch(() => {});
 });
 
-// --- গেম স্টেট ও টাইমার ---
+// --- স্টেট ও অরিয়েন্টেশন লজিক ---
 let gameState = 'INTRO';
 let chaseMode = 'mouse';
 let score = 0;
@@ -203,59 +366,72 @@ let frameCount = 0;
 const groundLineY = 345;
 
 let introTimer = 0;
-const INTRO_DURATION = 300;       // ৫ সেকেন্ড
+const INTRO_DURATION = 280;
 let afterIntroTimer = 0;
-const AFTER_INTRO_DURATION = 120; // ২ সেকেন্ড
+const AFTER_INTRO_DURATION = 110;
+
 let fadeProgress = 0;
 let fadeOutIntro = false;
 let fadeInAfterIntro = false;
 let fadeOutAfterIntro = false;
 
-// অ্যাপ চালু হওয়ার সাথে সাথেই ইন্ট্রো অডিও বাজানো
-window.addEventListener('DOMContentLoaded', () => {
-    if (!isMuted) startingAudio.play().catch(() => {});
-});
+startingAudio.play().catch(() => {});
+
+function switchToLandscapeMode() {
+    if (window.AndroidApp && window.AndroidApp.setLandscape) {
+        window.AndroidApp.setLandscape();
+    }
+    canvas.width = 960;
+    canvas.height = 420;
+}
 
 function transitionToAfterIntro() {
+    switchToLandscapeMode();
     gameState = 'AFTER_INTRO';
     afterIntroTimer = 0;
     fadeInAfterIntro = true;
     fadeOutAfterIntro = false;
+
     startingAudio.pause();
     startingAudio.currentTime = 0;
-
-    // স্ক্রিন বাঁকিয়ে Landscape মোডে নেওয়া
-    if (window.AndroidBridge && window.AndroidBridge.setLandscape) {
-        window.AndroidBridge.setLandscape();
-    }
-    setTimeout(resizeCanvas, 200);
-
     if (!isMuted) beforeGamePlayAudio.play().catch(() => {});
 }
 
 function transitionToLobby() {
     gameState = 'LOBBY';
-    resizeCanvas();
     document.getElementById('uiOverlay').style.display = 'flex';
-    document.getElementById('controls').style.display = 'block';
+    document.getElementById('controls').style.display = 'flex';
     messageBox.style.display = 'block';
 }
 
-const cat = { x: 80, y: groundLineY - 96, width: 115, height: 96, vy: 0, gravity: 0.75, jumpPower: -15.4, isGrounded: true };
+const cat = {
+    x: 80, y: groundLineY - 96, width: 115, height: 96,
+    vy: 0, gravity: 0.75, jumpPower: -15.4, isGrounded: true
+};
+
 const targetRunner = { baseX: 440, x: 440 };
 const bugTypes = ['🐛', '🐞', '🐝', '🪲'];
 let obstacles = [], items = [], floatingTexts = [];
-let bgTrees = [{ x: 120, scale: 1.0 }, { x: 380, scale: 0.8 }, { x: 640, scale: 1.15 }, { x: 890, scale: 0.9 }];
-let clouds = [{ x: 180, y: 70, speed: 0.45 }, { x: 520, y: 50, speed: 0.35 }, { x: 820, y: 85, speed: 0.5 }];
+let bgTrees = [
+    { x: 120, scale: 1.0 }, { x: 380, scale: 0.8 },
+    { x: 640, scale: 1.15 }, { x: 890, scale: 0.9 }
+];
+let clouds = [
+    { x: 180, y: 70, speed: 0.45 },
+    { x: 520, y: 50, speed: 0.35 },
+    { x: 820, y: 85, speed: 0.5 }
+];
 
 function updateLivesUI() {
     livesDisplay.textContent = '❤️'.repeat(Math.max(0, lives)) + '🖤'.repeat(Math.max(0, 3 - lives));
 }
+
 function addScore(points, x, y) {
     score += points;
     scoreEl.textContent = String(score).padStart(5, '0');
     floatingTexts.push({ text: `+${points}`, x, y, color: '#ffeb3b', alpha: 1.0 });
 }
+
 function addFloatingAlert(text, x, y, color = '#ff5252') {
     floatingTexts.push({ text, x, y, color, alpha: 1.0 });
 }
@@ -269,9 +445,9 @@ function startGameWithMode(mode) {
     else if (chaseMode === 'chicks') playBaccaSound();
 }
 
-document.getElementById('btnMouseMode').addEventListener('click', (e) => { e.stopPropagation(); startGameWithMode('mouse'); });
-document.getElementById('btnChickenMode').addEventListener('click', (e) => { e.stopPropagation(); startGameWithMode('chicken'); });
-document.getElementById('btnChicksMode').addEventListener('click', (e) => { e.stopPropagation(); startGameWithMode('chicks'); });
+btnMouseMode.addEventListener('click', (e) => { e.stopPropagation(); startGameWithMode('mouse'); });
+btnChickenMode.addEventListener('click', (e) => { e.stopPropagation(); startGameWithMode('chicken'); });
+btnChicksMode.addEventListener('click', (e) => { e.stopPropagation(); startGameWithMode('chicks'); });
 
 function jump() {
     initAudio();
@@ -286,7 +462,6 @@ function jump() {
 
 function resetGame() {
     gameState = 'PLAYING';
-    resizeCanvas();
     score = 0; lives = 3; invincibleTimer = 0;
     updateLivesUI();
     gameSpeed = 6.5;
@@ -299,7 +474,8 @@ function resetGame() {
 
 function handleCactusCollision() {
     if (invincibleTimer > 0) return;
-    lives--; updateLivesUI();
+    lives--;
+    updateLivesUI();
     if (lives > 0) {
         invincibleTimer = 95;
         playHitLifeSound();
@@ -311,7 +487,9 @@ function handleCactusCollision() {
 
 function gameOver() {
     gameState = 'GAMEOVER';
-    stopBGM(); stopCustomAudios(); playGameOverSound();
+    stopBGM();
+    stopCustomAudios();
+    playGameOverSound();
     if (score > highScore) {
         highScore = score;
         localStorage.setItem('catRunnerHighScore', highScore);
@@ -334,52 +512,89 @@ window.addEventListener('keydown', (e) => {
 canvas.addEventListener('touchstart', (e) => { e.preventDefault(); if (gameState === 'PLAYING') jump(); }, { passive: false });
 canvas.addEventListener('mousedown', () => { if (gameState === 'PLAYING') jump(); });
 
-function drawEnvironment() {
+function drawImageProperly(img, targetW, targetH) {
+    if (!img.complete || img.naturalWidth === 0) return;
+    const imgRatio = img.naturalWidth / img.naturalHeight;
+    const canvasRatio = targetW / targetH;
+    let drawW = targetW, drawH = targetH, offsetX = 0, offsetY = 0;
+
+    if (imgRatio > canvasRatio) {
+        drawH = targetH;
+        drawW = targetH * imgRatio;
+        offsetX = (targetW - drawW) / 2;
+    } else {
+        drawW = targetW;
+        drawH = targetW / imgRatio;
+        offsetY = (targetH - drawH) / 2;
+    }
+    ctx.drawImage(img, offsetX, offsetY, drawW, drawH);
+}
+
+function drawEnvironment(dtScale) {
     const horizonY = groundLineY - 12;
     const skyGrad = ctx.createLinearGradient(0, 0, 0, horizonY);
-    skyGrad.addColorStop(0, '#64B5F6'); skyGrad.addColorStop(1, '#E1F5FE');
-    ctx.fillStyle = skyGrad; ctx.fillRect(0, 0, canvas.width, horizonY);
+    skyGrad.addColorStop(0, '#64B5F6');
+    skyGrad.addColorStop(1, '#E1F5FE');
+    ctx.fillStyle = skyGrad;
+    ctx.fillRect(0, 0, canvas.width, horizonY);
 
     const sunX = 830, sunY = 75;
     const sunGlow = ctx.createRadialGradient(sunX, sunY, 15, sunX, sunY, 65);
     sunGlow.addColorStop(0, 'rgba(255, 238, 88, 1)');
     sunGlow.addColorStop(0.5, 'rgba(255, 213, 79, 0.4)');
     sunGlow.addColorStop(1, 'rgba(255, 213, 79, 0)');
-    ctx.fillStyle = sunGlow; ctx.beginPath(); ctx.arc(sunX, sunY, 65, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = '#FDD835'; ctx.beginPath(); ctx.arc(sunX, sunY, 28, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = sunGlow;
+    ctx.beginPath(); ctx.arc(sunX, sunY, 65, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#FDD835';
+    ctx.beginPath(); ctx.arc(sunX, sunY, 28, 0, Math.PI * 2); ctx.fill();
 
     ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
     clouds.forEach(c => {
-        if (gameState === 'PLAYING') c.x -= c.speed;
+        if (gameState === 'PLAYING') c.x -= c.speed * dtScale;
         if (c.x < -80) c.x = canvas.width + 60;
-        ctx.beginPath(); ctx.arc(c.x, c.y, 16, 0, Math.PI * 2); ctx.arc(c.x + 18, c.y - 6, 20, 0, Math.PI * 2); ctx.arc(c.x + 38, c.y, 16, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, 16, 0, Math.PI * 2);
+        ctx.arc(c.x + 18, c.y - 6, 20, 0, Math.PI * 2);
+        ctx.arc(c.x + 38, c.y, 16, 0, Math.PI * 2);
+        ctx.fill();
     });
 
     const hillShift = (frameCount * (gameState === 'PLAYING' ? gameSpeed * 0.15 : 0)) % 960;
     ctx.fillStyle = '#81C784';
     for (let offset = -960; offset <= 960; offset += 960) {
         const bx = offset - hillShift;
-        ctx.beginPath(); ctx.moveTo(bx, horizonY);
+        ctx.beginPath();
+        ctx.moveTo(bx, horizonY);
         ctx.quadraticCurveTo(bx + 160, horizonY - 125, bx + 340, horizonY);
         ctx.quadraticCurveTo(bx + 540, horizonY - 150, bx + 740, horizonY);
-        ctx.quadraticCurveTo(bx + 850, horizonY - 95, bx + 960, horizonY); ctx.fill();
+        ctx.quadraticCurveTo(bx + 850, horizonY - 95, bx + 960, horizonY);
+        ctx.fill();
     }
 
     const frontHillShift = (frameCount * (gameState === 'PLAYING' ? gameSpeed * 0.28 : 0)) % 960;
     ctx.fillStyle = '#66BB6A';
     for (let offset = -960; offset <= 960; offset += 960) {
         const bx = offset - frontHillShift;
-        ctx.beginPath(); ctx.moveTo(bx, horizonY);
+        ctx.beginPath();
+        ctx.moveTo(bx, horizonY);
         ctx.quadraticCurveTo(bx + 220, horizonY - 85, bx + 450, horizonY);
-        ctx.quadraticCurveTo(bx + 700, horizonY - 105, bx + 960, horizonY); ctx.fill();
+        ctx.quadraticCurveTo(bx + 700, horizonY - 105, bx + 960, horizonY);
+        ctx.fill();
     }
 
     bgTrees.forEach(t => {
-        if (gameState === 'PLAYING') t.x -= gameSpeed * 0.45;
+        if (gameState === 'PLAYING') t.x -= gameSpeed * 0.45 * dtScale;
         if (t.x < -70) t.x = canvas.width + 70;
-        ctx.save(); ctx.translate(t.x, horizonY); ctx.scale(t.scale, t.scale);
+        ctx.save();
+        ctx.translate(t.x, horizonY);
+        ctx.scale(t.scale, t.scale);
         ctx.fillStyle = '#6D4C41'; ctx.fillRect(-6, -45, 12, 45);
-        ctx.fillStyle = '#2E7D32'; ctx.beginPath(); ctx.arc(0, -55, 24, 0, Math.PI * 2); ctx.arc(-16, -42, 18, 0, Math.PI * 2); ctx.arc(16, -42, 18, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#2E7D32';
+        ctx.beginPath();
+        ctx.arc(0, -55, 24, 0, Math.PI * 2);
+        ctx.arc(-16, -42, 18, 0, Math.PI * 2);
+        ctx.arc(16, -42, 18, 0, Math.PI * 2);
+        ctx.fill();
         ctx.restore();
     });
 
@@ -393,37 +608,57 @@ function drawEnvironment() {
     }
 }
 
+let lastSpawnStep = 0;
 function spawnEntities() {
-    if (frameCount % Math.max(68, Math.floor(115 - gameSpeed * 3)) === 0 && Math.random() > 0.22) {
-        const isDouble = Math.random() > 0.65;
-        obstacles.push({ x: canvas.width + 20, y: groundLineY - 52, width: isDouble ? 46 : 26, height: 52, isDouble });
+    const step = Math.floor(frameCount);
+    if (step === lastSpawnStep) return;
+    lastSpawnStep = step;
+
+    if (step % Math.max(68, Math.floor(115 - gameSpeed * 3)) === 0) {
+        if (Math.random() > 0.22) {
+            const isDouble = Math.random() > 0.65;
+            obstacles.push({ x: canvas.width + 20, y: groundLineY - 52, width: isDouble ? 46 : 26, height: 52, isDouble });
+        }
     }
-    if (frameCount % 68 === 0) {
+    if (step % 68 === 0) {
         const isCheese = Math.random() > 0.62;
         const randomBug = bugTypes[Math.floor(Math.random() * bugTypes.length)];
         const isHigh = Math.random() > 0.48;
-        items.push({ icon: isCheese ? '🧀' : randomBug, points: isCheese ? 2 : 1, x: canvas.width + 40, y: isHigh ? groundLineY - 95 : groundLineY - 12, size: 30 });
+        items.push({
+            icon: isCheese ? '🧀' : randomBug,
+            points: isCheese ? 2 : 1,
+            x: canvas.width + 40,
+            y: isHigh ? groundLineY - 95 : groundLineY - 12,
+            size: 30
+        });
     }
 }
 
 function drawCactus(obs) {
     ctx.fillStyle = '#1B5E20';
     ctx.fillRect(obs.x + 8, obs.y, 10, obs.height);
-    ctx.fillRect(obs.x, obs.y + 14, 8, 6); ctx.fillRect(obs.x, obs.y + 7, 5, 12);
-    ctx.fillRect(obs.x + 18, obs.y + 20, 8, 6); ctx.fillRect(obs.x + 21, obs.y + 11, 5, 14);
+    ctx.fillRect(obs.x, obs.y + 14, 8, 6);
+    ctx.fillRect(obs.x, obs.y + 7, 5, 12);
+    ctx.fillRect(obs.x + 18, obs.y + 20, 8, 6);
+    ctx.fillRect(obs.x + 21, obs.y + 11, 5, 14);
     if (obs.isDouble) {
         const ox = obs.x + 22;
         ctx.fillRect(ox + 8, obs.y + 7, 8, obs.height - 7);
-        ctx.fillRect(ox + 16, obs.y + 18, 8, 5); ctx.fillRect(ox + 19, obs.y + 11, 5, 11);
+        ctx.fillRect(ox + 16, obs.y + 18, 8, 5);
+        ctx.fillRect(ox + 19, obs.y + 11, 5, 11);
     }
 }
 
 function drawMouse(rx) {
-    const legSwing = Math.sin(frameCount * 0.42) * 5, baseY = groundLineY;
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.22)'; ctx.beginPath(); ctx.ellipse(rx + 18, baseY, 18, 4, 0, 0, Math.PI * 2); ctx.fill();
+    const legSwing = Math.sin(frameCount * 0.42) * 5;
+    const baseY = groundLineY;
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.22)';
+    ctx.beginPath(); ctx.ellipse(rx + 18, baseY, 18, 4, 0, 0, Math.PI * 2); ctx.fill();
     ctx.save(); ctx.translate(rx, baseY);
-    ctx.strokeStyle = '#F06292'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(2, -12); ctx.quadraticCurveTo(-15, -20 + legSwing, -23, -10); ctx.stroke();
-    ctx.strokeStyle = '#212121'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(10, -6); ctx.lineTo(10 - legSwing, 0); ctx.moveTo(25, -6); ctx.lineTo(25 + legSwing, 0); ctx.stroke();
+    ctx.strokeStyle = '#F06292'; ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(2, -12); ctx.quadraticCurveTo(-15, -20 + legSwing, -23, -10); ctx.stroke();
+    ctx.strokeStyle = '#212121'; ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(10, -6); ctx.lineTo(10 - legSwing, 0); ctx.moveTo(25, -6); ctx.lineTo(25 + legSwing, 0); ctx.stroke();
     ctx.fillStyle = '#616161'; ctx.beginPath(); ctx.ellipse(18, -13, 17, 10, 0, 0, Math.PI * 2); ctx.fill();
     ctx.fillStyle = '#424242'; ctx.beginPath(); ctx.arc(27, -22, 6.5, 0, Math.PI * 2); ctx.fill();
     ctx.fillStyle = '#F48FB1'; ctx.beginPath(); ctx.arc(27, -22, 3.2, 0, Math.PI * 2); ctx.fill();
@@ -433,20 +668,27 @@ function drawMouse(rx) {
 }
 
 function drawBangladeshiChicken(rx) {
-    const legSwing = Math.sin(frameCount * 0.46) * 7, bodyBob = Math.abs(Math.sin(frameCount * 0.46)) * 2.5, baseY = groundLineY;
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.24)'; ctx.beginPath(); ctx.ellipse(rx + 22, baseY, 20, 4.5, 0, 0, Math.PI * 2); ctx.fill();
+    const legSwing = Math.sin(frameCount * 0.46) * 7;
+    const bodyBob = Math.abs(Math.sin(frameCount * 0.46)) * 2.5;
+    const baseY = groundLineY;
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.24)';
+    ctx.beginPath(); ctx.ellipse(rx + 22, baseY, 20, 4.5, 0, 0, Math.PI * 2); ctx.fill();
     ctx.save(); ctx.translate(rx, baseY);
-    ctx.strokeStyle = '#D4AC0D'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(18, -12); ctx.lineTo(15 - legSwing, 0); ctx.moveTo(26, -12); ctx.lineTo(29 + legSwing, 0); ctx.stroke();
+    ctx.strokeStyle = '#D4AC0D'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(18, -12); ctx.lineTo(15 - legSwing, 0); ctx.moveTo(26, -12); ctx.lineTo(29 + legSwing, 0); ctx.stroke();
     ctx.translate(0, -bodyBob);
-    ctx.fillStyle = '#1B2631'; ctx.beginPath(); ctx.moveTo(6, -22); ctx.quadraticCurveTo(-8, -38, -12, -26); ctx.quadraticCurveTo(-4, -26, 4, -18); ctx.fill();
-    ctx.fillStyle = '#7E5109'; ctx.beginPath(); ctx.moveTo(8, -20); ctx.quadraticCurveTo(-5, -32, -8, -20); ctx.lineTo(6, -15); ctx.fill();
+    ctx.fillStyle = '#1B2631';
+    ctx.beginPath(); ctx.moveTo(6, -22); ctx.quadraticCurveTo(-8, -38, -12, -26); ctx.quadraticCurveTo(-4, -26, 4, -18); ctx.fill();
+    ctx.fillStyle = '#7E5109';
+    ctx.beginPath(); ctx.moveTo(8, -20); ctx.quadraticCurveTo(-5, -32, -8, -20); ctx.lineTo(6, -15); ctx.fill();
     const bodyGrad = ctx.createLinearGradient(5, -30, 35, -10);
     bodyGrad.addColorStop(0, '#A04000'); bodyGrad.addColorStop(0.5, '#CA6F1E'); bodyGrad.addColorStop(1, '#E59866');
     ctx.fillStyle = bodyGrad; ctx.beginPath(); ctx.ellipse(21, -20, 18, 12, -0.2, 0, Math.PI * 2); ctx.fill();
     ctx.fillStyle = '#6E2C00'; ctx.beginPath(); ctx.ellipse(19, -20, 10, 6.5, 0.15, 0, Math.PI * 2); ctx.fill();
     ctx.fillStyle = '#D35400'; ctx.beginPath(); ctx.moveTo(28, -22); ctx.lineTo(32, -36); ctx.lineTo(40, -34); ctx.lineTo(36, -18); ctx.closePath(); ctx.fill();
     ctx.beginPath(); ctx.arc(36, -35, 8, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = '#C0392B'; ctx.beginPath(); ctx.arc(32, -43, 3.2, 0, Math.PI * 2); ctx.arc(36, -44.5, 3.8, 0, Math.PI * 2); ctx.arc(40, -42.5, 3, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#C0392B';
+    ctx.beginPath(); ctx.arc(32, -43, 3.2, 0, Math.PI * 2); ctx.arc(36, -44.5, 3.8, 0, Math.PI * 2); ctx.arc(40, -42.5, 3, 0, Math.PI * 2); ctx.fill();
     ctx.beginPath(); ctx.arc(41, -29, 3, 0, Math.PI * 2); ctx.fill();
     ctx.fillStyle = '#F1C40F'; ctx.beginPath(); ctx.moveTo(43, -36); ctx.lineTo(51, -33.5); ctx.lineTo(43, -32); ctx.closePath(); ctx.fill();
     ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(38, -36, 1.8, 0, Math.PI * 2); ctx.fill();
@@ -455,11 +697,16 @@ function drawBangladeshiChicken(rx) {
 
 function drawBabyChicks(startX) {
     for (let i = 0; i < 4; i++) {
-        const phase = frameCount * 0.5 + i * 1.1, legSwing = Math.sin(phase) * 4, hopY = Math.abs(Math.sin(phase)) * 3.5;
-        const cx = startX + i * 36, baseY = groundLineY;
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.2)'; ctx.beginPath(); ctx.ellipse(cx + 10, baseY, 10, 3, 0, 0, Math.PI * 2); ctx.fill();
+        const phase = frameCount * 0.5 + i * 1.1;
+        const legSwing = Math.sin(phase) * 4;
+        const hopY = Math.abs(Math.sin(phase)) * 3.5;
+        const cx = startX + i * 36;
+        const baseY = groundLineY;
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+        ctx.beginPath(); ctx.ellipse(cx + 10, baseY, 10, 3, 0, 0, Math.PI * 2); ctx.fill();
         ctx.save(); ctx.translate(cx, baseY);
-        ctx.strokeStyle = '#E67E22'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(8, -5); ctx.lineTo(7 - legSwing, 0); ctx.moveTo(12, -5); ctx.lineTo(13 + legSwing, 0); ctx.stroke();
+        ctx.strokeStyle = '#E67E22'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(8, -5); ctx.lineTo(7 - legSwing, 0); ctx.moveTo(12, -5); ctx.lineTo(13 + legSwing, 0); ctx.stroke();
         ctx.translate(0, -hopY);
         ctx.fillStyle = '#FFEB3B'; ctx.beginPath(); ctx.ellipse(10, -10, 9.5, 7.5, -0.1, 0, Math.PI * 2); ctx.fill();
         ctx.fillStyle = '#FFF176'; ctx.beginPath(); ctx.arc(17, -16, 6, 0, Math.PI * 2); ctx.fill();
@@ -469,11 +716,23 @@ function drawBabyChicks(startX) {
     }
 }
 
+let lastSoundStep = 0;
 function drawTargetRunner() {
     targetRunner.x = targetRunner.baseX + Math.sin(frameCount * 0.08) * 20;
-    if (chaseMode === 'chicken') { drawBangladeshiChicken(targetRunner.x); if (gameState === 'PLAYING' && frameCount > 10 && frameCount % 190 === 0) playMurgiSound(); }
-    else if (chaseMode === 'chicks') { drawBabyChicks(targetRunner.x - 20); if (gameState === 'PLAYING' && frameCount > 10 && frameCount % 175 === 0) playBaccaSound(); }
-    else drawMouse(targetRunner.x);
+    const step = Math.floor(frameCount);
+    if (chaseMode === 'chicken') {
+        drawBangladeshiChicken(targetRunner.x);
+        if (gameState === 'PLAYING' && step > 10 && step % 190 === 0 && step !== lastSoundStep) {
+            lastSoundStep = step; playMurgiSound();
+        }
+    } else if (chaseMode === 'chicks') {
+        drawBabyChicks(targetRunner.x - 20);
+        if (gameState === 'PLAYING' && step > 10 && step % 175 === 0 && step !== lastSoundStep) {
+            lastSoundStep = step; playBaccaSound();
+        }
+    } else {
+        drawMouse(targetRunner.x);
+    }
 }
 
 function drawCat() {
@@ -486,94 +745,161 @@ function drawCat() {
 
     const heightFromGround = Math.max(0, (groundLineY - cat.height) - cat.y);
     const shadowScale = Math.max(0.4, 1 - heightFromGround / 180);
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.24)'; ctx.beginPath(); ctx.ellipse(cat.x + cat.width * 0.48, groundLineY, 42 * shadowScale, 6 * shadowScale, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.24)';
+    ctx.beginPath(); ctx.ellipse(cat.x + cat.width * 0.48, groundLineY, 42 * shadowScale, 6 * shadowScale, 0, 0, Math.PI * 2); ctx.fill();
 
     if (currentImg.complete && currentImg.naturalWidth !== 0) {
         const aspectRatio = currentImg.naturalWidth / currentImg.naturalHeight;
-        const drawHeight = cat.height, drawWidth = drawHeight * aspectRatio;
+        const drawHeight = cat.height;
+        const drawWidth = drawHeight * aspectRatio;
         cat.width = drawWidth;
         ctx.drawImage(currentImg, cat.x, cat.y + (cat.isGrounded ? 14 : 6), drawWidth, drawHeight);
     }
     ctx.restore();
 }
 
-function drawIntro() {
+function drawIntro(dtScale) {
     ctx.fillStyle = '#000000';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    drawImageProperly(images.intro);
+    drawImageProperly(images.intro, canvas.width, canvas.height);
 
-    introTimer++;
+    introTimer += dtScale;
     if (introTimer >= INTRO_DURATION) fadeOutIntro = true;
+
     if (fadeOutIntro) {
-        fadeProgress += 0.03;
-        if (fadeProgress >= 1) { fadeProgress = 1; fadeOutIntro = false; transitionToAfterIntro(); }
+        fadeProgress += 0.035 * dtScale;
+        if (fadeProgress >= 1) {
+            fadeProgress = 1;
+            fadeOutIntro = false;
+            transitionToAfterIntro();
+        }
         ctx.fillStyle = `rgba(0, 0, 0, ${fadeProgress})`;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 }
 
-function drawAfterIntro() {
-    ctx.fillStyle = '#1b5e20';
+function drawAfterIntro(dtScale) {
+    ctx.fillStyle = '#000000';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    drawImageProperly(images.afterIntro);
+    drawImageProperly(images.afterIntro, canvas.width, canvas.height);
 
     if (fadeInAfterIntro) {
-        fadeProgress -= 0.04;
+        fadeProgress -= 0.04 * dtScale;
         if (fadeProgress <= 0) { fadeProgress = 0; fadeInAfterIntro = false; }
         ctx.fillStyle = `rgba(0, 0, 0, ${fadeProgress})`;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         return;
     }
 
-    afterIntroTimer++;
+    afterIntroTimer += dtScale;
     if (afterIntroTimer >= AFTER_INTRO_DURATION) fadeOutAfterIntro = true;
+
     if (fadeOutAfterIntro) {
-        fadeProgress += 0.04;
-        if (fadeProgress >= 1) { fadeProgress = 0; fadeOutAfterIntro = false; transitionToLobby(); }
+        fadeProgress += 0.04 * dtScale;
+        if (fadeProgress >= 1) {
+            fadeProgress = 0;
+            fadeOutAfterIntro = false;
+            transitionToLobby();
+        }
         ctx.fillStyle = `rgba(100, 181, 246, ${fadeProgress})`;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 }
 
-function update() {
+function drawLobby() {
+    drawEnvironment(0);
+    drawCat();
+    drawTargetRunner();
+}
+
+// --- FPS ক্যাপ এবং ডেল্টা-টাইম মেইন গেম লুপ ---
+function update(now) {
+    requestAnimationFrame(update);
+
+    const frameInterval = 1000 / targetFPS;
+    const elapsed = now - lastFrameTime;
+    if (elapsed < frameInterval) return;
+
+    lastFrameTime = now - (elapsed % frameInterval);
+    // 60 FPS বেসলাইন ধরে গতি সমান রাখা (30 FPS এ 2x এবং 120 FPS এ 0.5x স্টেপ)
+    const dtScale = Math.min(2.5, elapsed / (1000 / 60));
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    if (gameState === 'INTRO') drawIntro();
-    else if (gameState === 'AFTER_INTRO') drawAfterIntro();
-    else if (gameState === 'LOBBY' || gameState === 'GAMEOVER') { drawEnvironment(); drawCat(); drawTargetRunner(); }
+
+    if (gameState === 'INTRO') drawIntro(dtScale);
+    else if (gameState === 'AFTER_INTRO') drawAfterIntro(dtScale);
+    else if (gameState === 'LOBBY' || gameState === 'GAMEOVER' || gameState === 'PAUSED') drawLobby();
     else if (gameState === 'PLAYING') {
-        drawEnvironment();
-        frameCount++; gameSpeed += 0.0008;
-        if (invincibleTimer > 0) invincibleTimer--;
-        cat.vy += cat.gravity; cat.y += cat.vy;
-        if (cat.y >= groundLineY - cat.height) { cat.y = groundLineY - cat.height; cat.vy = 0; cat.isGrounded = true; }
+        drawEnvironment(dtScale);
+        frameCount += dtScale;
+        gameSpeed += 0.0008 * dtScale;
+        if (invincibleTimer > 0) invincibleTimer = Math.max(0, invincibleTimer - dtScale);
+
+        cat.vy += cat.gravity * dtScale;
+        cat.y += cat.vy * dtScale;
+        if (cat.y >= groundLineY - cat.height) {
+            cat.y = groundLineY - cat.height;
+            cat.vy = 0;
+            cat.isGrounded = true;
+        }
+
         spawnEntities();
 
         for (let i = obstacles.length - 1; i >= 0; i--) {
-            let obs = obstacles[i]; obs.x -= gameSpeed; drawCactus(obs);
-            if (invincibleTimer === 0 && cat.x + 24 < obs.x + obs.width - 5 && cat.x + cat.width - 24 > obs.x + 5 && cat.y + 15 < obs.y + obs.height && cat.y + cat.height - 6 > obs.y + 5) handleCactusCollision();
+            let obs = obstacles[i];
+            obs.x -= gameSpeed * dtScale;
+            drawCactus(obs);
+            if (
+                invincibleTimer === 0 &&
+                cat.x + 24 < obs.x + obs.width - 5 &&
+                cat.x + cat.width - 24 > obs.x + 5 &&
+                cat.y + 15 < obs.y + obs.height &&
+                cat.y + cat.height - 6 > obs.y + 5
+            ) handleCactusCollision();
             if (obs.x + obs.width < 0) obstacles.splice(i, 1);
         }
 
         ctx.font = '28px Arial';
         for (let i = items.length - 1; i >= 0; i--) {
-            let item = items[i]; item.x -= gameSpeed; ctx.fillText(item.icon, item.x, item.y);
-            if (cat.x + 12 < item.x + item.size && cat.x + cat.width - 12 > item.x && cat.y < item.y && cat.y + cat.height > item.y - item.size) {
-                playCollectSound(item.points); addScore(item.points, item.x, item.y - 18); items.splice(i, 1); continue;
+            let item = items[i];
+            item.x -= gameSpeed * dtScale;
+            ctx.fillText(item.icon, item.x, item.y);
+            if (
+                cat.x + 12 < item.x + item.size &&
+                cat.x + cat.width - 12 > item.x &&
+                cat.y < item.y &&
+                cat.y + cat.height > item.y - item.size
+            ) {
+                playCollectSound(item.points);
+                addScore(item.points, item.x, item.y - 18);
+                items.splice(i, 1);
+                continue;
             }
             if (item.x < -40) items.splice(i, 1);
         }
 
         for (let i = floatingTexts.length - 1; i >= 0; i--) {
-            let ft = floatingTexts[i]; ft.y -= 1.3; ft.alpha -= 0.022;
-            ctx.save(); ctx.globalAlpha = Math.max(0, ft.alpha); ctx.fillStyle = ft.color || '#ffeb3b'; ctx.strokeStyle = '#000'; ctx.lineWidth = 3.5;
-            ctx.font = 'bold 20px Hind Siliguri, Courier New'; ctx.strokeText(ft.text, ft.x, ft.y); ctx.fillText(ft.text, ft.x, ft.y); ctx.restore();
+            let ft = floatingTexts[i];
+            ft.y -= 1.3 * dtScale;
+            ft.alpha -= 0.022 * dtScale;
+            ctx.save();
+            ctx.globalAlpha = Math.max(0, ft.alpha);
+            ctx.fillStyle = ft.color || '#ffeb3b';
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 3.5;
+            ctx.font = 'bold 20px Hind Siliguri, Courier New';
+            ctx.strokeText(ft.text, ft.x, ft.y);
+            ctx.fillText(ft.text, ft.x, ft.y);
+            ctx.restore();
             if (ft.alpha <= 0) floatingTexts.splice(i, 1);
         }
-        drawTargetRunner(); drawCat();
+
+        drawTargetRunner();
+        drawCat();
     }
-    requestAnimationFrame(update);
 }
-update();
+
+requestAnimationFrame(update);
 </script>
 </body>
 </html>
