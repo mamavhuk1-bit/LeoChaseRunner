@@ -12,21 +12,28 @@ import android.webkit.WebViewClient;
 public class MainActivity extends Activity {
     private WebView webView;
 
-    public class OrientationBridge {
+    public class AndroidBridge {
         @JavascriptInterface
         public void setLandscape() {
-            runOnUiThread(() -> setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE));
+            runOnUiThread(() -> {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                hideSystemUI();
+            });
         }
 
         @JavascriptInterface
         public void setPortrait() {
-            runOnUiThread(() -> setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
+            runOnUiThread(() -> {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                hideSystemUI();
+            });
         }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         hideSystemUI();
 
         webView = new WebView(this);
@@ -38,7 +45,7 @@ public class MainActivity extends Activity {
         settings.setAllowFileAccess(true);
         settings.setMediaPlaybackRequiresUserGesture(false);
 
-        webView.addJavascriptInterface(new OrientationBridge(), "AndroidBridge");
+        webView.addJavascriptInterface(new AndroidBridge(), "AndroidApp");
         webView.setWebViewClient(new WebViewClient());
         webView.loadUrl("file:///android_asset/index.html");
     }

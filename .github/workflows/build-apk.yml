@@ -1,4 +1,4 @@
-name: Build Leo Cat v3 Release APK
+name: Build Leo Cat v4 Release APK
 
 on:
   push:
@@ -19,18 +19,18 @@ jobs:
           distribution: 'temurin'
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.5'
 
-      - name: Build Signed Release APK v3
+      - name: Build Signed Release APK v4
         run: gradle assembleRelease
 
-      - name: Rename APK to Leo-Cat-v3.0.apk
-        run: cp app/build/outputs/apk/release/app-release.apk Leo-Cat-v3.0.apk
+      - name: Rename APK to Leo-Cat-v4.0.apk
+        run: cp app/build/outputs/apk/release/app-release.apk Leo-Cat-v4.0.apk
 
       - name: Upload Release APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Leo-Cat-v3.0-APK
-          path: Leo-Cat-v3.0.apk
+          name: Leo-Cat-v4.0-APK
+          path: Leo-Cat-v4.0.apk

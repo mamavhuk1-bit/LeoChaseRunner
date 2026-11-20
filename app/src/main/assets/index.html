@@ -397,7 +397,7 @@ function transitionToAfterIntro() {
     if (!isMuted) beforeGamePlayAudio.play().catch(() => {});
 }
 
-function transitionToLobby() {
+function transitionToLobby() { switchToLandscapeMode();
     gameState = 'LOBBY';
     document.getElementById('uiOverlay').style.display = 'flex';
     document.getElementById('controls').style.display = 'flex';
@@ -460,7 +460,7 @@ function jump() {
     }
 }
 
-function resetGame() {
+function resetGame() { switchToLandscapeMode();
     gameState = 'PLAYING';
     score = 0; lives = 3; invincibleTimer = 0;
     updateLivesUI();
