@@ -1,33 +1,35 @@
 plugins {
     id 'com.android.application'
 }
+
 android {
     namespace 'com.leo.runner'
     compileSdk 34
+
     defaultConfig {
         applicationId "com.leo.runner"
         minSdk 23
         targetSdk 34
-        versionCode 4
-        versionName "1.1"
+        versionCode 5
+        versionName "5.0"
     }
+
     signingConfigs {
         release {
-            storeFile file("leo-release.jks")
-            storePassword "leocat123"
-            keyAlias "leocat"
-            keyPassword "leocat123"
+            storeFile file("../leo-release.jks")
+            storePassword "leocat2026"
+            keyAlias "leo_key"
+            keyPassword "leocat2026"
         }
     }
+
     buildTypes {
         release {
             signingConfig signingConfigs.release
             minifyEnabled false
         }
-        debug {
-            signingConfig signingConfigs.release
-        }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
