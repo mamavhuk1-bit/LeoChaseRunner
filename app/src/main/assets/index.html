@@ -3,287 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>লিওর দৌড়ঝাঁপ - Leo Chase Runner</title>
+    <title>LEO CAT</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Galada&family=Hind+Siliguri:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-        html, body {
-            width: 100%;
-            height: 100%;
-            background-color: #111;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            font-family: 'Hind Siliguri', sans-serif;
-        }
-        #gameContainer {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-            max-width: 100%;
-            max-height: 100%;
-            overflow: hidden;
-        }
-        canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
-        #uiOverlay {
-            position: absolute;
-            top: 16px;
-            right: 24px;
-            display: none;
-            align-items: center;
-            gap: 18px;
-            font-size: 21px;
-            font-weight: bold;
-            font-family: 'Courier New', Courier, monospace;
-            color: #1b2631;
-            background: rgba(255, 255, 255, 0.88);
-            padding: 6px 16px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.18);
-        }
-        #livesDisplay {
-            font-size: 20px;
-            letter-spacing: 2px;
-        }
-        #controls {
-            position: absolute;
-            top: 16px;
-            left: 20px;
-            z-index: 5;
-            display: none;
-        }
-        .top-btn {
-            background: #2e7d32;
-            color: white;
-            border: 2px solid #1b5e20;
-            padding: 8px 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-family: 'Hind Siliguri', sans-serif;
-            font-size: 15px;
-            font-weight: 700;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-        }
-        #messageBox {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            background: linear-gradient(145deg, rgba(255, 255, 255, 0.97), rgba(241, 248, 233, 0.96));
-            padding: 20px 26px;
-            border-radius: 18px;
-            border: 3px solid #2e7d32;
-            box-shadow: 0 12px 32px rgba(0,0,0,0.32);
-            z-index: 10;
-            min-width: 520px;
-            max-width: 94vw;
-            display: none;
-        }
-        #msgTitle {
-            font-family: 'Galada', 'Hind Siliguri', cursive;
-            color: #1b5e20;
-            margin-bottom: 4px;
-            font-size: 30px;
-            letter-spacing: 0.5px;
-            text-shadow: 1px 1px 0px rgba(46, 125, 50, 0.15);
-        }
-        #msgSub {
-            color: #37474f;
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-        .rules-grid {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 14px;
-            flex-wrap: wrap;
-        }
-        .rule-card {
-            background: #ffffff;
-            border: 2px solid #a5d6a7;
-            border-radius: 12px;
-            padding: 7px 10px;
-            min-width: 112px;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.06);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .rule-card.danger-card {
-            border-color: #ef9a9a;
-            background: #fff8f8;
-        }
-        .rule-icon {
-            font-size: 20px;
-            margin-bottom: 2px;
-        }
-        .rule-label {
-            font-size: 12.5px;
-            font-weight: 600;
-            color: #455a64;
-        }
-        .rule-point {
-            font-size: 15px;
-            font-weight: 700;
-            color: #e65100;
-            background: #fff3e0;
-            padding: 1px 9px;
-            border-radius: 20px;
-            margin-top: 3px;
-        }
-        .rule-point.danger-badge {
-            color: #c62828;
-            background: #ffebee;
-        }
-        .mode-prompt {
-            font-size: 16px;
-            font-weight: 700;
-            color: #1b5e20;
-            margin-bottom: 8px;
-        }
-        .mode-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            justify-content: center;
-        }
-        .mode-btn {
-            color: #fff;
-            border: 2px solid rgba(0,0,0,0.25);
-            padding: 10px 18px;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            font-family: 'Hind Siliguri', sans-serif;
-            transition: transform 0.1s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.18);
-        }
-        .mode-btn:active {
-            transform: scale(0.95);
-        }
-        .mode-btn.mouse-btn {
-            background: #455a64;
-            border-color: #263238;
-        }
-        .mode-btn.chicken-btn {
-            background: #bf360c;
-            border-color: #870000;
-        }
-        .mode-btn.chicks-btn {
-            background: #f9a825;
-            color: #1b2631;
-            border-color: #c17900;
-        }
-        #rotateWarning {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: #1b2631;
-            color: #fff;
-            z-index: 999;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 20px;
-            font-size: 20px;
-        }
-        @media screen and (orientation: portrait) and (max-width: 768px) {
-            #rotateWarning {
-                display: flex;
-            }
-        }
-        #interactiveOverlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(0,0,0,0.95);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            cursor: pointer;
-            color: #fff;
-            text-align: center;
-        }
-        #interactiveOverlay h1 {
-            font-family: 'Galada', cursive;
-            font-size: 40px;
-            color: #4caf50;
-            margin-bottom: 10px;
-        }
-        #interactiveOverlay p {
-            font-size: 18px;
-            color: #e0e0e0;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-user-select: none; }
+        html, body { width: 100%; height: 100%; background-color: #000; display: flex; align-items: center; justify-content: center; overflow: hidden; font-family: 'Hind Siliguri', sans-serif; }
+        #gameContainer { position: relative; width: 100vw; height: 100vh; overflow: hidden; }
+        canvas { display: block; width: 100%; height: 100%; }
+        #uiOverlay { position: absolute; top: 14px; right: 20px; display: none; align-items: center; gap: 16px; font-size: 20px; font-weight: bold; font-family: 'Courier New', monospace; color: #1b2631; background: rgba(255, 255, 255, 0.88); padding: 6px 14px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.18); }
+        #livesDisplay { font-size: 19px; letter-spacing: 2px; }
+        #controls { position: absolute; top: 14px; left: 18px; z-index: 5; display: none; }
+        .top-btn { background: #2e7d32; color: white; border: 2px solid #1b5e20; padding: 7px 13px; border-radius: 8px; cursor: pointer; font-family: 'Hind Siliguri', sans-serif; font-size: 14px; font-weight: 700; }
+        #messageBox { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; background: linear-gradient(145deg, rgba(255, 255, 255, 0.97), rgba(241, 248, 233, 0.96)); padding: 18px 24px; border-radius: 18px; border: 3px solid #2e7d32; box-shadow: 0 12px 32px rgba(0,0,0,0.32); z-index: 10; min-width: 500px; max-width: 94vw; display: none; }
+        #msgTitle { font-family: 'Galada', 'Hind Siliguri', cursive; color: #1b5e20; margin-bottom: 4px; font-size: 28px; }
+        #msgSub { color: #37474f; font-size: 15px; font-weight: 600; margin-bottom: 10px; }
+        .rules-grid { display: flex; justify-content: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+        .rule-card { background: #ffffff; border: 2px solid #a5d6a7; border-radius: 12px; padding: 6px 9px; min-width: 108px; display: flex; flex-direction: column; align-items: center; }
+        .rule-card.danger-card { border-color: #ef9a9a; background: #fff8f8; }
+        .rule-icon { font-size: 19px; margin-bottom: 2px; }
+        .rule-label { font-size: 12px; font-weight: 600; color: #455a64; }
+        .rule-point { font-size: 14px; font-weight: 700; color: #e65100; background: #fff3e0; padding: 1px 8px; border-radius: 20px; margin-top: 2px; }
+        .rule-point.danger-badge { color: #c62828; background: #ffebee; }
+        .mode-prompt { font-size: 15px; font-weight: 700; color: #1b5e20; margin-bottom: 8px; }
+        .mode-buttons { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+        .mode-btn { color: #fff; border: 2px solid rgba(0,0,0,0.25); padding: 9px 16px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: 'Hind Siliguri', sans-serif; }
+        .mode-btn.mouse-btn { background: #455a64; }
+        .mode-btn.chicken-btn { background: #bf360c; }
+        .mode-btn.chicks-btn { background: #f9a825; color: #1b2631; }
     </style>
 </head>
 <body>
 
-<div id="rotateWarning">
-    <div style="font-size: 48px; margin-bottom: 12px;">📱🔄</div>
-    <p>গেমটি খেলার জন্য অনুগ্রহ করে ফোনটি ল্যান্ডস্কেপ (আড়াআড়ি) মোডে ঘোরান</p>
-</div>
-
-<div id="interactiveOverlay">
-    <h1>লিওর দৌড়ঝাঁপ 🐾</h1>
-    <p>গেমটি শুরু করতে এখানে টাচ করুন</p>
-</div>
-
 <div id="gameContainer">
-    <div id="controls">
-        <button id="muteBtn" class="top-btn">🔊 Sound: ON</button>
-    </div>
+    <div id="controls"><button id="muteBtn" class="top-btn">🔊 Sound: ON</button></div>
     <div id="uiOverlay">
-        <div id="livesDisplay" title="লাইফ লাইন">❤️❤️❤️</div>
+        <div id="livesDisplay">❤️❤️❤️</div>
         <div>HI <span id="highScore">00000</span></div>
         <div id="score">00000</div>
     </div>
-    <canvas id="gameCanvas" width="960" height="420"></canvas>
+    <canvas id="gameCanvas"></canvas>
     <div id="messageBox">
         <h2 id="msgTitle">লিওর দৌড়ঝাঁপ 🐾</h2>
         <p id="msgSub" style="display: none;"></p>
-
         <div class="rules-grid">
-            <div class="rule-card">
-                <div class="rule-icon">🐛🐞🐝🪲</div>
-                <div class="rule-label">পোকা টাচ করলে</div>
-                <div class="rule-point">+১ পয়েন্ট</div>
-            </div>
-            <div class="rule-card">
-                <div class="rule-icon">🧀</div>
-                <div class="rule-label">পনির টাচ করলে</div>
-                <div class="rule-point">+২ পয়েন্ট</div>
-            </div>
-            <div class="rule-card">
-                <div class="rule-icon">🐈💨</div>
-                <div class="rule-label">লাফ দিলে</div>
-                <div class="rule-point">+৩ পয়েন্ট</div>
-            </div>
-            <div class="rule-card danger-card">
-                <div class="rule-icon">🌵💔</div>
-                <div class="rule-label">ক্যাকটাস টাচ করলে</div>
-                <div class="rule-point danger-badge">খেল খতম (৩টি লাইফ)</div>
-            </div>
+            <div class="rule-card"><div class="rule-icon">🐛🐞🐝🪲</div><div class="rule-label">পোকা টাচ করলে</div><div class="rule-point">+১ পয়েন্ট</div></div>
+            <div class="rule-card"><div class="rule-icon">🧀</div><div class="rule-label">পনির টাচ করলে</div><div class="rule-point">+২ পয়েন্ট</div></div>
+            <div class="rule-card"><div class="rule-icon">🐈💨</div><div class="rule-label">লাফ দিলে</div><div class="rule-point">+৩ পয়েন্ট</div></div>
+            <div class="rule-card danger-card"><div class="rule-icon">🌵💔</div><div class="rule-label">ক্যাকটাস টাচ করলে</div><div class="rule-point danger-badge">খেল খতম (৩টি লাইফ)</div></div>
         </div>
-
         <div class="mode-prompt">খেলার মোড বেছে নিন:</div>
         <div class="mode-buttons">
             <button id="btnMouseMode" class="mode-btn mouse-btn">🐭 ইঁদুর মোড</button>
@@ -303,19 +72,46 @@ const messageBox = document.getElementById('messageBox');
 const msgTitle = document.getElementById('msgTitle');
 const msgSub = document.getElementById('msgSub');
 const muteBtn = document.getElementById('muteBtn');
-const btnMouseMode = document.getElementById('btnMouseMode');
-const btnChickenMode = document.getElementById('btnChickenMode');
-const btnChicksMode = document.getElementById('btnChicksMode');
-const interactiveOverlay = document.getElementById('interactiveOverlay');
 
-// --- ছবি লোড করা ---
+// ক্যানভাস রেজোলিউশন ওরিয়েন্টেশন অনুযায়ী সেট করা (যাতে ছবি চ্যাপ্টা না হয়)
+function resizeCanvas() {
+    if (window.innerHeight > window.innerWidth) {
+        // Portrait (9:16)
+        canvas.width = 540;
+        canvas.height = 960;
+    } else {
+        // Landscape (16:9)
+        canvas.width = 960;
+        canvas.height = 420;
+    }
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+// ছবিকে চ্যাপ্টা না করে আসল অনুপাতে (Contain/Cover) আঁকার ফাংশন
+function drawImageProperly(img) {
+    if (!img.complete || img.naturalWidth === 0) return;
+    const imgRatio = img.naturalWidth / img.naturalHeight;
+    const canvasRatio = canvas.width / canvas.height;
+    let drawW, drawH, drawX, drawY;
+
+    if (imgRatio > canvasRatio) {
+        drawW = canvas.width;
+        drawH = canvas.width / imgRatio;
+        drawX = 0;
+        drawY = (canvas.height - drawH) / 2;
+    } else {
+        drawH = canvas.height;
+        drawW = canvas.height * imgRatio;
+        drawX = (canvas.width - drawW) / 2;
+        drawY = 0;
+    }
+    ctx.drawImage(img, drawX, drawY, drawW, drawH);
+}
+
 const images = {
-    run1: new Image(),
-    run2: new Image(),
-    jump: new Image(),
-    hurt: new Image(),
-    intro: new Image(),
-    afterIntro: new Image()
+    run1: new Image(), run2: new Image(), jump: new Image(), hurt: new Image(),
+    intro: new Image(), afterIntro: new Image()
 };
 images.run1.src = 'cat_run1.png';
 images.run2.src = 'cat_run2.png';
@@ -324,30 +120,19 @@ images.hurt.src = 'cat_hurt.png';
 images.intro.src = 'intro.jpg';
 images.afterIntro.src = 'after_intro.jpg';
 
-// --- অডিও ফাইল লোড করা ---
 const startingAudio = new Audio('starting.mp3');
 const beforeGamePlayAudio = new Audio('before_game_Play.mp3');
 const murgiAudio = new Audio('murgi.mp3');
 const baccaAudio = new Audio('bacca.mp3');
-
-startingAudio.preload = 'auto';
-beforeGamePlayAudio.preload = 'auto';
 beforeGamePlayAudio.loop = true;
-murgiAudio.preload = 'auto';
-baccaAudio.preload = 'auto';
 
-// --- বিল্ট-ইন গেম সাউন্ডস ---
 let audioCtx = null;
 let isMuted = false;
 let bgmInterval = null;
 
 function initAudio() {
-    if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-    if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-    }
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
 }
 
 function playTone(freq, type, duration, vol = 0.1) {
@@ -367,91 +152,45 @@ function playTone(freq, type, duration, vol = 0.1) {
 function playMurgiSound() {
     if (isMuted) return;
     murgiAudio.currentTime = 0;
-    murgiAudio.play().catch(() => {
-        playTone(440, 'sawtooth', 0.1, 0.08);
-        setTimeout(() => playTone(520, 'sawtooth', 0.12, 0.08), 140);
-    });
+    murgiAudio.play().catch(() => { playTone(440, 'sawtooth', 0.1, 0.08); setTimeout(() => playTone(520, 'sawtooth', 0.12, 0.08), 140); });
 }
 
 function playBaccaSound() {
     if (isMuted) return;
     baccaAudio.currentTime = 0;
-    baccaAudio.play().catch(() => {
-        playTone(1250, 'sine', 0.09, 0.08);
-        setTimeout(() => playTone(1450, 'sine', 0.09, 0.08), 120);
-        setTimeout(() => playTone(1350, 'sine', 0.11, 0.08), 240);
-    });
+    baccaAudio.play().catch(() => { playTone(1250, 'sine', 0.09, 0.08); setTimeout(() => playTone(1450, 'sine', 0.09, 0.08), 120); });
 }
 
 function stopCustomAudios() {
-    murgiAudio.pause();
-    murgiAudio.currentTime = 0;
-    baccaAudio.pause();
-    baccaAudio.currentTime = 0;
-    startingAudio.pause();
-    startingAudio.currentTime = 0;
-    beforeGamePlayAudio.pause();
-    beforeGamePlayAudio.currentTime = 0;
+    [murgiAudio, baccaAudio, startingAudio, beforeGamePlayAudio].forEach(a => { a.pause(); a.currentTime = 0; });
 }
 
-function playJumpSound() {
-    playTone(420, 'square', 0.12, 0.08);
-    setTimeout(() => playTone(640, 'square', 0.15, 0.08), 60);
-}
-
-function playCollectSound(points) {
-    if (points === 1) {
-        playTone(780, 'sine', 0.12, 0.12);
-    } else {
-        playTone(650, 'triangle', 0.1, 0.12);
-        setTimeout(() => playTone(980, 'triangle', 0.18, 0.12), 70);
-    }
-}
-
-function playHitLifeSound() {
-    playTone(260, 'sawtooth', 0.18, 0.14);
-    setTimeout(() => playTone(180, 'sawtooth', 0.22, 0.14), 110);
-}
-
-function playGameOverSound() {
-    playTone(300, 'sawtooth', 0.2, 0.12);
-    setTimeout(() => playTone(190, 'sawtooth', 0.35, 0.12), 150);
-}
+function playJumpSound() { playTone(420, 'square', 0.12, 0.08); setTimeout(() => playTone(640, 'square', 0.15, 0.08), 60); }
+function playCollectSound(p) { if (p === 1) playTone(780, 'sine', 0.12, 0.12); else { playTone(650, 'triangle', 0.1, 0.12); setTimeout(() => playTone(980, 'triangle', 0.18, 0.12), 70); } }
+function playHitLifeSound() { playTone(260, 'sawtooth', 0.18, 0.14); setTimeout(() => playTone(180, 'sawtooth', 0.22, 0.14), 110); }
+function playGameOverSound() { playTone(300, 'sawtooth', 0.2, 0.12); setTimeout(() => playTone(190, 'sawtooth', 0.35, 0.12), 150); }
 
 function startBGM() {
     stopBGM();
     const melody = [261.63, 329.63, 392.00, 329.63, 293.66, 349.23, 440.00, 349.23];
     let step = 0;
     bgmInterval = setInterval(() => {
-        if (!isMuted && gameState === 'PLAYING') {
-            playTone(melody[step % melody.length], 'triangle', 0.18, 0.04);
-            step++;
-        }
+        if (!isMuted && gameState === 'PLAYING') { playTone(melody[step % melody.length], 'triangle', 0.18, 0.04); step++; }
     }, 230);
 }
-
-function stopBGM() {
-    if (bgmInterval) clearInterval(bgmInterval);
-}
+function stopBGM() { if (bgmInterval) clearInterval(bgmInterval); }
 
 muteBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     isMuted = !isMuted;
     muteBtn.textContent = isMuted ? '🔇 Sound: OFF' : '🔊 Sound: ON';
-    if (isMuted) {
-        stopCustomAudios();
-    } else {
-        if (gameState === 'INTRO') {
-            startingAudio.play().catch(() => {});
-        } else if (gameState === 'AFTER_INTRO' || gameState === 'LOBBY') {
-            beforeGamePlayAudio.play().catch(() => {});
-        }
-    }
+    if (isMuted) stopCustomAudios();
+    else if (gameState === 'INTRO') startingAudio.play().catch(() => {});
+    else if (gameState === 'AFTER_INTRO' || gameState === 'LOBBY') beforeGamePlayAudio.play().catch(() => {});
 });
 
-// --- গেম ভেরিয়েবল ---
-// স্টেট ক্রম: INTERACTION -> INTRO (5s) -> AFTER_INTRO (2s) -> LOBBY -> PLAYING -> GAMEOVER
-let gameState = 'INTERACTION';
+// --- গেম স্টেট ও টাইমার ---
+let gameState = 'INTRO';
 let chaseMode = 'mouse';
 let score = 0;
 let lives = 3;
@@ -463,115 +202,62 @@ let gameSpeed = 6.5;
 let frameCount = 0;
 const groundLineY = 345;
 
-// টাইমার ও ফেড অ্যানিমেশন ভেরিয়েবল
 let introTimer = 0;
-const INTRO_DURATION = 300;        // ৫ সেকেন্ড (৬০ FPS * ৫)
+const INTRO_DURATION = 300;       // ৫ সেকেন্ড
 let afterIntroTimer = 0;
-const AFTER_INTRO_DURATION = 120;  // ২ সেকেন্ড (৬০ FPS * ২)
-
+const AFTER_INTRO_DURATION = 120; // ২ সেকেন্ড
 let fadeProgress = 0;
 let fadeOutIntro = false;
 let fadeInAfterIntro = false;
 let fadeOutAfterIntro = false;
 
-const cat = {
-    x: 80,
-    y: groundLineY - 96,
-    width: 115,
-    height: 96,
-    vy: 0,
-    gravity: 0.75,
-    jumpPower: -15.4,
-    isGrounded: true
-};
-
-const targetRunner = {
-    baseX: 440,
-    x: 440
-};
-
-const bugTypes = ['🐛', '🐞', '🐝', '🪲'];
-
-let obstacles = [];
-let items = [];
-let floatingTexts = [];
-let bgTrees = [
-    { x: 120, scale: 1.0 },
-    { x: 380, scale: 0.8 },
-    { x: 640, scale: 1.15 },
-    { x: 890, scale: 0.9 }
-];
-let clouds = [
-    { x: 180, y: 70, speed: 0.45 },
-    { x: 520, y: 50, speed: 0.35 },
-    { x: 820, y: 85, speed: 0.5 }
-];
-
-function updateLivesUI() {
-    const fullHearts = '❤️'.repeat(Math.max(0, lives));
-    const emptyHearts = '🖤'.repeat(Math.max(0, 3 - lives));
-    livesDisplay.textContent = fullHearts + emptyHearts;
-}
-
-function addScore(points, x, y) {
-    score += points;
-    scoreEl.textContent = String(score).padStart(5, '0');
-    floatingTexts.push({
-        text: `+${points}`,
-        x: x,
-        y: y,
-        color: '#ffeb3b',
-        alpha: 1.0
-    });
-}
-
-function addFloatingAlert(text, x, y, color = '#ff5252') {
-    floatingTexts.push({
-        text: text,
-        x: x,
-        y: y,
-        color: color,
-        alpha: 1.0
-    });
-}
-
-// ধাপ ১: ইউজার স্ক্রিনে টাচ করলে intro.jpg ও starting.mp3 শুরু হবে
-interactiveOverlay.addEventListener('click', () => {
-    interactiveOverlay.style.display = 'none';
-    initAudio();
-    stopCustomAudios();
-
-    gameState = 'INTRO';
-    introTimer = 0;
-    fadeProgress = 0;
-    fadeOutIntro = false;
-
-    if (!isMuted) {
-        startingAudio.play().catch(err => console.log('starting.mp3 load failed', err));
-    }
+// অ্যাপ চালু হওয়ার সাথে সাথেই ইন্ট্রো অডিও বাজানো
+window.addEventListener('DOMContentLoaded', () => {
+    if (!isMuted) startingAudio.play().catch(() => {});
 });
 
-// ধাপ ২: ৫ সেকেন্ড পর after_intro.jpg (২ সেকেন্ডের জন্য) ও before_game_Play.mp3 শুরু হবে
 function transitionToAfterIntro() {
     gameState = 'AFTER_INTRO';
     afterIntroTimer = 0;
     fadeInAfterIntro = true;
     fadeOutAfterIntro = false;
-
     startingAudio.pause();
     startingAudio.currentTime = 0;
 
-    if (!isMuted) {
-        beforeGamePlayAudio.play().catch(err => console.log('before_game_Play.mp3 load failed', err));
+    // স্ক্রিন বাঁকিয়ে Landscape মোডে নেওয়া
+    if (window.AndroidBridge && window.AndroidBridge.setLandscape) {
+        window.AndroidBridge.setLandscape();
     }
+    setTimeout(resizeCanvas, 200);
+
+    if (!isMuted) beforeGamePlayAudio.play().catch(() => {});
 }
 
-// ধাপ ৩: ২ সেকেন্ড পর আগের প্রাকৃতিক ব্যাকগ্রাউন্ড ও মোড বাছাইয়ের কার্ড দেখাবে
 function transitionToLobby() {
     gameState = 'LOBBY';
+    resizeCanvas();
     document.getElementById('uiOverlay').style.display = 'flex';
     document.getElementById('controls').style.display = 'block';
     messageBox.style.display = 'block';
+}
+
+const cat = { x: 80, y: groundLineY - 96, width: 115, height: 96, vy: 0, gravity: 0.75, jumpPower: -15.4, isGrounded: true };
+const targetRunner = { baseX: 440, x: 440 };
+const bugTypes = ['🐛', '🐞', '🐝', '🪲'];
+let obstacles = [], items = [], floatingTexts = [];
+let bgTrees = [{ x: 120, scale: 1.0 }, { x: 380, scale: 0.8 }, { x: 640, scale: 1.15 }, { x: 890, scale: 0.9 }];
+let clouds = [{ x: 180, y: 70, speed: 0.45 }, { x: 520, y: 50, speed: 0.35 }, { x: 820, y: 85, speed: 0.5 }];
+
+function updateLivesUI() {
+    livesDisplay.textContent = '❤️'.repeat(Math.max(0, lives)) + '🖤'.repeat(Math.max(0, 3 - lives));
+}
+function addScore(points, x, y) {
+    score += points;
+    scoreEl.textContent = String(score).padStart(5, '0');
+    floatingTexts.push({ text: `+${points}`, x, y, color: '#ffeb3b', alpha: 1.0 });
+}
+function addFloatingAlert(text, x, y, color = '#ff5252') {
+    floatingTexts.push({ text, x, y, color, alpha: 1.0 });
 }
 
 function startGameWithMode(mode) {
@@ -579,27 +265,13 @@ function startGameWithMode(mode) {
     stopCustomAudios();
     chaseMode = mode;
     resetGame();
-    if (chaseMode === 'chicken') {
-        playMurgiSound();
-    } else if (chaseMode === 'chicks') {
-        playBaccaSound();
-    }
+    if (chaseMode === 'chicken') playMurgiSound();
+    else if (chaseMode === 'chicks') playBaccaSound();
 }
 
-btnMouseMode.addEventListener('click', (e) => {
-    e.stopPropagation();
-    startGameWithMode('mouse');
-});
-
-btnChickenMode.addEventListener('click', (e) => {
-    e.stopPropagation();
-    startGameWithMode('chicken');
-});
-
-btnChicksMode.addEventListener('click', (e) => {
-    e.stopPropagation();
-    startGameWithMode('chicks');
-});
+document.getElementById('btnMouseMode').addEventListener('click', (e) => { e.stopPropagation(); startGameWithMode('mouse'); });
+document.getElementById('btnChickenMode').addEventListener('click', (e) => { e.stopPropagation(); startGameWithMode('chicken'); });
+document.getElementById('btnChicksMode').addEventListener('click', (e) => { e.stopPropagation(); startGameWithMode('chicks'); });
 
 function jump() {
     initAudio();
@@ -614,28 +286,20 @@ function jump() {
 
 function resetGame() {
     gameState = 'PLAYING';
-    score = 0;
-    lives = 3;
-    invincibleTimer = 0;
+    resizeCanvas();
+    score = 0; lives = 3; invincibleTimer = 0;
     updateLivesUI();
     gameSpeed = 6.5;
     scoreEl.textContent = '00000';
-    obstacles = [];
-    items = [];
-    floatingTexts = [];
-    cat.y = groundLineY - cat.height;
-    cat.vy = 0;
-    cat.isGrounded = true;
+    obstacles = []; items = []; floatingTexts = [];
+    cat.y = groundLineY - cat.height; cat.vy = 0; cat.isGrounded = true;
     messageBox.style.display = 'none';
     startBGM();
 }
 
-function handleCactusCollision(obs) {
+function handleCactusCollision() {
     if (invincibleTimer > 0) return;
-
-    lives--;
-    updateLivesUI();
-
+    lives--; updateLivesUI();
     if (lives > 0) {
         invincibleTimer = 95;
         playHitLifeSound();
@@ -647,19 +311,13 @@ function handleCactusCollision(obs) {
 
 function gameOver() {
     gameState = 'GAMEOVER';
-    stopBGM();
-    stopCustomAudios();
-    playGameOverSound();
+    stopBGM(); stopCustomAudios(); playGameOverSound();
     if (score > highScore) {
         highScore = score;
         localStorage.setItem('catRunnerHighScore', highScore);
         highScoreEl.textContent = String(highScore).padStart(5, '0');
     }
-
-    if (!isMuted) {
-        beforeGamePlayAudio.play().catch(() => {});
-    }
-
+    if (!isMuted) beforeGamePlayAudio.play().catch(() => {});
     msgTitle.textContent = 'খেল খতম! 😿';
     msgSub.style.display = 'block';
     msgSub.textContent = `লিওর মোট স্কোর: ${score} পয়েন্ট`;
@@ -669,115 +327,64 @@ function gameOver() {
 window.addEventListener('keydown', (e) => {
     if (e.code === 'Space' || e.code === 'ArrowUp') {
         e.preventDefault();
-        if (gameState === 'PLAYING') {
-            jump();
-        } else if (gameState === 'GAMEOVER') {
-            startGameWithMode(chaseMode);
-        }
+        if (gameState === 'PLAYING') jump();
+        else if (gameState === 'GAMEOVER') startGameWithMode(chaseMode);
     }
 });
-canvas.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    if (gameState === 'PLAYING') {
-        jump();
-    }
-}, { passive: false });
-canvas.addEventListener('mousedown', () => {
-    if (gameState === 'PLAYING') {
-        jump();
-    }
-});
+canvas.addEventListener('touchstart', (e) => { e.preventDefault(); if (gameState === 'PLAYING') jump(); }, { passive: false });
+canvas.addEventListener('mousedown', () => { if (gameState === 'PLAYING') jump(); });
 
-// --- প্রাকৃতিক ব্যাকগ্রাউন্ড (সূর্য, পাহাড়, গাছপালা) ---
 function drawEnvironment() {
     const horizonY = groundLineY - 12;
-
     const skyGrad = ctx.createLinearGradient(0, 0, 0, horizonY);
-    skyGrad.addColorStop(0, '#64B5F6');
-    skyGrad.addColorStop(1, '#E1F5FE');
-    ctx.fillStyle = skyGrad;
-    ctx.fillRect(0, 0, canvas.width, horizonY);
+    skyGrad.addColorStop(0, '#64B5F6'); skyGrad.addColorStop(1, '#E1F5FE');
+    ctx.fillStyle = skyGrad; ctx.fillRect(0, 0, canvas.width, horizonY);
 
-    // সূর্য
-    const sunX = 830;
-    const sunY = 75;
+    const sunX = 830, sunY = 75;
     const sunGlow = ctx.createRadialGradient(sunX, sunY, 15, sunX, sunY, 65);
     sunGlow.addColorStop(0, 'rgba(255, 238, 88, 1)');
     sunGlow.addColorStop(0.5, 'rgba(255, 213, 79, 0.4)');
     sunGlow.addColorStop(1, 'rgba(255, 213, 79, 0)');
-    ctx.fillStyle = sunGlow;
-    ctx.beginPath();
-    ctx.arc(sunX, sunY, 65, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.fillStyle = sunGlow; ctx.beginPath(); ctx.arc(sunX, sunY, 65, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#FDD835'; ctx.beginPath(); ctx.arc(sunX, sunY, 28, 0, Math.PI * 2); ctx.fill();
 
-    ctx.fillStyle = '#FDD835';
-    ctx.beginPath();
-    ctx.arc(sunX, sunY, 28, 0, Math.PI * 2);
-    ctx.fill();
-
-    // মেঘ
     ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
     clouds.forEach(c => {
         if (gameState === 'PLAYING') c.x -= c.speed;
         if (c.x < -80) c.x = canvas.width + 60;
-        ctx.beginPath();
-        ctx.arc(c.x, c.y, 16, 0, Math.PI * 2);
-        ctx.arc(c.x + 18, c.y - 6, 20, 0, Math.PI * 2);
-        ctx.arc(c.x + 38, c.y, 16, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.beginPath(); ctx.arc(c.x, c.y, 16, 0, Math.PI * 2); ctx.arc(c.x + 18, c.y - 6, 20, 0, Math.PI * 2); ctx.arc(c.x + 38, c.y, 16, 0, Math.PI * 2); ctx.fill();
     });
 
-    // দূরের পাহাড়
     const hillShift = (frameCount * (gameState === 'PLAYING' ? gameSpeed * 0.15 : 0)) % 960;
     ctx.fillStyle = '#81C784';
     for (let offset = -960; offset <= 960; offset += 960) {
         const bx = offset - hillShift;
-        ctx.beginPath();
-        ctx.moveTo(bx, horizonY);
+        ctx.beginPath(); ctx.moveTo(bx, horizonY);
         ctx.quadraticCurveTo(bx + 160, horizonY - 125, bx + 340, horizonY);
         ctx.quadraticCurveTo(bx + 540, horizonY - 150, bx + 740, horizonY);
-        ctx.quadraticCurveTo(bx + 850, horizonY - 95, bx + 960, horizonY);
-        ctx.fill();
+        ctx.quadraticCurveTo(bx + 850, horizonY - 95, bx + 960, horizonY); ctx.fill();
     }
 
-    // সামনের পাহাড়
     const frontHillShift = (frameCount * (gameState === 'PLAYING' ? gameSpeed * 0.28 : 0)) % 960;
     ctx.fillStyle = '#66BB6A';
     for (let offset = -960; offset <= 960; offset += 960) {
         const bx = offset - frontHillShift;
-        ctx.beginPath();
-        ctx.moveTo(bx, horizonY);
+        ctx.beginPath(); ctx.moveTo(bx, horizonY);
         ctx.quadraticCurveTo(bx + 220, horizonY - 85, bx + 450, horizonY);
-        ctx.quadraticCurveTo(bx + 700, horizonY - 105, bx + 960, horizonY);
-        ctx.fill();
+        ctx.quadraticCurveTo(bx + 700, horizonY - 105, bx + 960, horizonY); ctx.fill();
     }
 
-    // গাছপালা
     bgTrees.forEach(t => {
         if (gameState === 'PLAYING') t.x -= gameSpeed * 0.45;
         if (t.x < -70) t.x = canvas.width + 70;
-
-        ctx.save();
-        ctx.translate(t.x, horizonY);
-        ctx.scale(t.scale, t.scale);
-        ctx.fillStyle = '#6D4C41';
-        ctx.fillRect(-6, -45, 12, 45);
-        ctx.fillStyle = '#2E7D32';
-        ctx.beginPath();
-        ctx.arc(0, -55, 24, 0, Math.PI * 2);
-        ctx.arc(-16, -42, 18, 0, Math.PI * 2);
-        ctx.arc(16, -42, 18, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.save(); ctx.translate(t.x, horizonY); ctx.scale(t.scale, t.scale);
+        ctx.fillStyle = '#6D4C41'; ctx.fillRect(-6, -45, 12, 45);
+        ctx.fillStyle = '#2E7D32'; ctx.beginPath(); ctx.arc(0, -55, 24, 0, Math.PI * 2); ctx.arc(-16, -42, 18, 0, Math.PI * 2); ctx.arc(16, -42, 18, 0, Math.PI * 2); ctx.fill();
         ctx.restore();
     });
 
-    // সবুজ ঘাসের মাঠ
-    ctx.fillStyle = '#558B2F';
-    ctx.fillRect(0, horizonY, canvas.width, canvas.height - horizonY);
-
-    ctx.fillStyle = '#7CB342';
-    ctx.fillRect(0, horizonY, canvas.width, 16);
-
+    ctx.fillStyle = '#558B2F'; ctx.fillRect(0, horizonY, canvas.width, canvas.height - horizonY);
+    ctx.fillStyle = '#7CB342'; ctx.fillRect(0, horizonY, canvas.width, 16);
     ctx.fillStyle = '#33691E';
     for (let i = 0; i < canvas.width + 40; i += 40) {
         const offset = (frameCount * gameSpeed) % 40;
@@ -787,499 +394,185 @@ function drawEnvironment() {
 }
 
 function spawnEntities() {
-    if (frameCount % Math.max(68, Math.floor(115 - gameSpeed * 3)) === 0) {
-        if (Math.random() > 0.22) {
-            const isDouble = Math.random() > 0.65;
-            obstacles.push({
-                x: canvas.width + 20,
-                y: groundLineY - 52,
-                width: isDouble ? 46 : 26,
-                height: 52,
-                isDouble: isDouble
-            });
-        }
+    if (frameCount % Math.max(68, Math.floor(115 - gameSpeed * 3)) === 0 && Math.random() > 0.22) {
+        const isDouble = Math.random() > 0.65;
+        obstacles.push({ x: canvas.width + 20, y: groundLineY - 52, width: isDouble ? 46 : 26, height: 52, isDouble });
     }
-
     if (frameCount % 68 === 0) {
         const isCheese = Math.random() > 0.62;
         const randomBug = bugTypes[Math.floor(Math.random() * bugTypes.length)];
         const isHigh = Math.random() > 0.48;
-        items.push({
-            icon: isCheese ? '🧀' : randomBug,
-            points: isCheese ? 2 : 1,
-            x: canvas.width + 40,
-            y: isHigh ? groundLineY - 95 : groundLineY - 12,
-            size: 30
-        });
+        items.push({ icon: isCheese ? '🧀' : randomBug, points: isCheese ? 2 : 1, x: canvas.width + 40, y: isHigh ? groundLineY - 95 : groundLineY - 12, size: 30 });
     }
 }
 
 function drawCactus(obs) {
     ctx.fillStyle = '#1B5E20';
     ctx.fillRect(obs.x + 8, obs.y, 10, obs.height);
-    ctx.fillRect(obs.x, obs.y + 14, 8, 6);
-    ctx.fillRect(obs.x, obs.y + 7, 5, 12);
-    ctx.fillRect(obs.x + 18, obs.y + 20, 8, 6);
-    ctx.fillRect(obs.x + 21, obs.y + 11, 5, 14);
-
+    ctx.fillRect(obs.x, obs.y + 14, 8, 6); ctx.fillRect(obs.x, obs.y + 7, 5, 12);
+    ctx.fillRect(obs.x + 18, obs.y + 20, 8, 6); ctx.fillRect(obs.x + 21, obs.y + 11, 5, 14);
     if (obs.isDouble) {
         const ox = obs.x + 22;
         ctx.fillRect(ox + 8, obs.y + 7, 8, obs.height - 7);
-        ctx.fillRect(ox + 16, obs.y + 18, 8, 5);
-        ctx.fillRect(ox + 19, obs.y + 11, 5, 11);
+        ctx.fillRect(ox + 16, obs.y + 18, 8, 5); ctx.fillRect(ox + 19, obs.y + 11, 5, 11);
     }
 }
 
 function drawMouse(rx) {
-    const legSwing = Math.sin(frameCount * 0.42) * 5;
-    const baseY = groundLineY;
-
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.22)';
-    ctx.beginPath();
-    ctx.ellipse(rx + 18, baseY, 18, 4, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.save();
-    ctx.translate(rx, baseY);
-
-    ctx.strokeStyle = '#F06292';
-    ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    ctx.moveTo(2, -12);
-    ctx.quadraticCurveTo(-15, -20 + legSwing, -23, -10);
-    ctx.stroke();
-
-    ctx.strokeStyle = '#212121';
-    ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    ctx.moveTo(10, -6);
-    ctx.lineTo(10 - legSwing, 0);
-    ctx.moveTo(25, -6);
-    ctx.lineTo(25 + legSwing, 0);
-    ctx.stroke();
-
-    ctx.fillStyle = '#616161';
-    ctx.beginPath();
-    ctx.ellipse(18, -13, 17, 10, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = '#424242';
-    ctx.beginPath();
-    ctx.arc(27, -22, 6.5, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#F48FB1';
-    ctx.beginPath();
-    ctx.arc(27, -22, 3.2, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = '#000';
-    ctx.beginPath();
-    ctx.arc(31, -16, 2, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#E91E63';
-    ctx.beginPath();
-    ctx.arc(36, -13, 2.2, 0, Math.PI * 2);
-    ctx.fill();
-
+    const legSwing = Math.sin(frameCount * 0.42) * 5, baseY = groundLineY;
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.22)'; ctx.beginPath(); ctx.ellipse(rx + 18, baseY, 18, 4, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.save(); ctx.translate(rx, baseY);
+    ctx.strokeStyle = '#F06292'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(2, -12); ctx.quadraticCurveTo(-15, -20 + legSwing, -23, -10); ctx.stroke();
+    ctx.strokeStyle = '#212121'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(10, -6); ctx.lineTo(10 - legSwing, 0); ctx.moveTo(25, -6); ctx.lineTo(25 + legSwing, 0); ctx.stroke();
+    ctx.fillStyle = '#616161'; ctx.beginPath(); ctx.ellipse(18, -13, 17, 10, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#424242'; ctx.beginPath(); ctx.arc(27, -22, 6.5, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#F48FB1'; ctx.beginPath(); ctx.arc(27, -22, 3.2, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(31, -16, 2, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#E91E63'; ctx.beginPath(); ctx.arc(36, -13, 2.2, 0, Math.PI * 2); ctx.fill();
     ctx.restore();
 }
 
 function drawBangladeshiChicken(rx) {
-    const legSwing = Math.sin(frameCount * 0.46) * 7;
-    const bodyBob = Math.abs(Math.sin(frameCount * 0.46)) * 2.5;
-    const baseY = groundLineY;
-
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.24)';
-    ctx.beginPath();
-    ctx.ellipse(rx + 22, baseY, 20, 4.5, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.save();
-    ctx.translate(rx, baseY);
-
-    ctx.strokeStyle = '#D4AC0D';
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(18, -12);
-    ctx.lineTo(15 - legSwing, 0);
-    ctx.moveTo(26, -12);
-    ctx.lineTo(29 + legSwing, 0);
-    ctx.stroke();
-
+    const legSwing = Math.sin(frameCount * 0.46) * 7, bodyBob = Math.abs(Math.sin(frameCount * 0.46)) * 2.5, baseY = groundLineY;
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.24)'; ctx.beginPath(); ctx.ellipse(rx + 22, baseY, 20, 4.5, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.save(); ctx.translate(rx, baseY);
+    ctx.strokeStyle = '#D4AC0D'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(18, -12); ctx.lineTo(15 - legSwing, 0); ctx.moveTo(26, -12); ctx.lineTo(29 + legSwing, 0); ctx.stroke();
     ctx.translate(0, -bodyBob);
-
-    ctx.fillStyle = '#1B2631';
-    ctx.beginPath();
-    ctx.moveTo(6, -22);
-    ctx.quadraticCurveTo(-8, -38, -12, -26);
-    ctx.quadraticCurveTo(-4, -26, 4, -18);
-    ctx.fill();
-
-    ctx.fillStyle = '#7E5109';
-    ctx.beginPath();
-    ctx.moveTo(8, -20);
-    ctx.quadraticCurveTo(-5, -32, -8, -20);
-    ctx.lineTo(6, -15);
-    ctx.fill();
-
+    ctx.fillStyle = '#1B2631'; ctx.beginPath(); ctx.moveTo(6, -22); ctx.quadraticCurveTo(-8, -38, -12, -26); ctx.quadraticCurveTo(-4, -26, 4, -18); ctx.fill();
+    ctx.fillStyle = '#7E5109'; ctx.beginPath(); ctx.moveTo(8, -20); ctx.quadraticCurveTo(-5, -32, -8, -20); ctx.lineTo(6, -15); ctx.fill();
     const bodyGrad = ctx.createLinearGradient(5, -30, 35, -10);
-    bodyGrad.addColorStop(0, '#A04000');
-    bodyGrad.addColorStop(0.5, '#CA6F1E');
-    bodyGrad.addColorStop(1, '#E59866');
-    ctx.fillStyle = bodyGrad;
-    ctx.beginPath();
-    ctx.ellipse(21, -20, 18, 12, -0.2, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = '#6E2C00';
-    ctx.beginPath();
-    ctx.ellipse(19, -20, 10, 6.5, 0.15, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = '#F5B041';
-    ctx.lineWidth = 1.2;
-    ctx.beginPath();
-    ctx.moveTo(13, -20);
-    ctx.lineTo(24, -19);
-    ctx.moveTo(14, -17);
-    ctx.lineTo(23, -16);
-    ctx.stroke();
-
-    ctx.fillStyle = '#D35400';
-    ctx.beginPath();
-    ctx.moveTo(28, -22);
-    ctx.lineTo(32, -36);
-    ctx.lineTo(40, -34);
-    ctx.lineTo(36, -18);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.beginPath();
-    ctx.arc(36, -35, 8, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = '#C0392B';
-    ctx.beginPath();
-    ctx.arc(32, -43, 3.2, 0, Math.PI * 2);
-    ctx.arc(36, -44.5, 3.8, 0, Math.PI * 2);
-    ctx.arc(40, -42.5, 3, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.beginPath();
-    ctx.arc(41, -29, 3, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = '#F1C40F';
-    ctx.beginPath();
-    ctx.moveTo(43, -36);
-    ctx.lineTo(51, -33.5);
-    ctx.lineTo(43, -32);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.fillStyle = '#000000';
-    ctx.beginPath();
-    ctx.arc(38, -36, 1.8, 0, Math.PI * 2);
-    ctx.fill();
-
+    bodyGrad.addColorStop(0, '#A04000'); bodyGrad.addColorStop(0.5, '#CA6F1E'); bodyGrad.addColorStop(1, '#E59866');
+    ctx.fillStyle = bodyGrad; ctx.beginPath(); ctx.ellipse(21, -20, 18, 12, -0.2, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#6E2C00'; ctx.beginPath(); ctx.ellipse(19, -20, 10, 6.5, 0.15, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#D35400'; ctx.beginPath(); ctx.moveTo(28, -22); ctx.lineTo(32, -36); ctx.lineTo(40, -34); ctx.lineTo(36, -18); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.arc(36, -35, 8, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#C0392B'; ctx.beginPath(); ctx.arc(32, -43, 3.2, 0, Math.PI * 2); ctx.arc(36, -44.5, 3.8, 0, Math.PI * 2); ctx.arc(40, -42.5, 3, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(41, -29, 3, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#F1C40F'; ctx.beginPath(); ctx.moveTo(43, -36); ctx.lineTo(51, -33.5); ctx.lineTo(43, -32); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(38, -36, 1.8, 0, Math.PI * 2); ctx.fill();
     ctx.restore();
 }
 
 function drawBabyChicks(startX) {
-    const chickCount = 4;
-    const spacing = 36;
-
-    for (let i = 0; i < chickCount; i++) {
-        const phase = frameCount * 0.5 + i * 1.1;
-        const legSwing = Math.sin(phase) * 4;
-        const hopY = Math.abs(Math.sin(phase)) * 3.5;
-        const cx = startX + i * spacing;
-        const baseY = groundLineY;
-
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-        ctx.beginPath();
-        ctx.ellipse(cx + 10, baseY, 10, 3, 0, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.save();
-        ctx.translate(cx, baseY);
-
-        ctx.strokeStyle = '#E67E22';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(8, -5);
-        ctx.lineTo(7 - legSwing, 0);
-        ctx.moveTo(12, -5);
-        ctx.lineTo(13 + legSwing, 0);
-        ctx.stroke();
-
+    for (let i = 0; i < 4; i++) {
+        const phase = frameCount * 0.5 + i * 1.1, legSwing = Math.sin(phase) * 4, hopY = Math.abs(Math.sin(phase)) * 3.5;
+        const cx = startX + i * 36, baseY = groundLineY;
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.2)'; ctx.beginPath(); ctx.ellipse(cx + 10, baseY, 10, 3, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.save(); ctx.translate(cx, baseY);
+        ctx.strokeStyle = '#E67E22'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(8, -5); ctx.lineTo(7 - legSwing, 0); ctx.moveTo(12, -5); ctx.lineTo(13 + legSwing, 0); ctx.stroke();
         ctx.translate(0, -hopY);
-
-        ctx.fillStyle = '#FFEB3B';
-        ctx.beginPath();
-        ctx.ellipse(10, -10, 9.5, 7.5, -0.1, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.fillStyle = '#FBC02D';
-        ctx.beginPath();
-        ctx.ellipse(9, -10, 5, 3.5, 0.2, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.fillStyle = '#FFF176';
-        ctx.beginPath();
-        ctx.arc(17, -16, 6, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.fillStyle = '#FF7043';
-        ctx.beginPath();
-        ctx.moveTo(22, -17);
-        ctx.lineTo(27, -15.5);
-        ctx.lineTo(22, -14);
-        ctx.closePath();
-        ctx.fill();
-
-        ctx.fillStyle = '#000';
-        ctx.beginPath();
-        ctx.arc(19, -17, 1.4, 0, Math.PI * 2);
-        ctx.fill();
-
+        ctx.fillStyle = '#FFEB3B'; ctx.beginPath(); ctx.ellipse(10, -10, 9.5, 7.5, -0.1, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#FFF176'; ctx.beginPath(); ctx.arc(17, -16, 6, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#FF7043'; ctx.beginPath(); ctx.moveTo(22, -17); ctx.lineTo(27, -15.5); ctx.lineTo(22, -14); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(19, -17, 1.4, 0, Math.PI * 2); ctx.fill();
         ctx.restore();
     }
 }
 
 function drawTargetRunner() {
-    const distanceBoost = Math.sin(frameCount * 0.08) * 20;
-    targetRunner.x = targetRunner.baseX + distanceBoost;
-
-    if (chaseMode === 'chicken') {
-        drawBangladeshiChicken(targetRunner.x);
-        if (gameState === 'PLAYING' && frameCount > 10 && frameCount % 190 === 0) {
-            playMurgiSound();
-        }
-    } else if (chaseMode === 'chicks') {
-        drawBabyChicks(targetRunner.x - 20);
-        if (gameState === 'PLAYING' && frameCount > 10 && frameCount % 175 === 0) {
-            playBaccaSound();
-        }
-    } else {
-        drawMouse(targetRunner.x);
-    }
+    targetRunner.x = targetRunner.baseX + Math.sin(frameCount * 0.08) * 20;
+    if (chaseMode === 'chicken') { drawBangladeshiChicken(targetRunner.x); if (gameState === 'PLAYING' && frameCount > 10 && frameCount % 190 === 0) playMurgiSound(); }
+    else if (chaseMode === 'chicks') { drawBabyChicks(targetRunner.x - 20); if (gameState === 'PLAYING' && frameCount > 10 && frameCount % 175 === 0) playBaccaSound(); }
+    else drawMouse(targetRunner.x);
 }
 
 function drawCat() {
-    if (invincibleTimer > 0 && Math.floor(invincibleTimer / 5) % 2 === 0) {
-        ctx.save();
-        ctx.globalAlpha = 0.45;
-    } else {
-        ctx.save();
-    }
-
+    ctx.save();
+    if (invincibleTimer > 0 && Math.floor(invincibleTimer / 5) % 2 === 0) ctx.globalAlpha = 0.45;
     let currentImg = images.run1;
-    if (gameState === 'GAMEOVER') {
-        currentImg = images.hurt;
-    } else if (invincibleTimer > 65) {
-        currentImg = images.hurt;
-    } else if (!cat.isGrounded) {
-        currentImg = images.jump;
-    } else if (gameState === 'PLAYING') {
-        currentImg = (Math.floor(frameCount / 7) % 2 === 0) ? images.run1 : images.run2;
-    }
+    if (gameState === 'GAMEOVER' || invincibleTimer > 65) currentImg = images.hurt;
+    else if (!cat.isGrounded) currentImg = images.jump;
+    else if (gameState === 'PLAYING') currentImg = (Math.floor(frameCount / 7) % 2 === 0) ? images.run1 : images.run2;
 
     const heightFromGround = Math.max(0, (groundLineY - cat.height) - cat.y);
     const shadowScale = Math.max(0.4, 1 - heightFromGround / 180);
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.24)';
-    ctx.beginPath();
-    ctx.ellipse(cat.x + cat.width * 0.48, groundLineY, 42 * shadowScale, 6 * shadowScale, 0, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.24)'; ctx.beginPath(); ctx.ellipse(cat.x + cat.width * 0.48, groundLineY, 42 * shadowScale, 6 * shadowScale, 0, 0, Math.PI * 2); ctx.fill();
 
     if (currentImg.complete && currentImg.naturalWidth !== 0) {
         const aspectRatio = currentImg.naturalWidth / currentImg.naturalHeight;
-        const drawHeight = cat.height;
-        const drawWidth = drawHeight * aspectRatio;
+        const drawHeight = cat.height, drawWidth = drawHeight * aspectRatio;
         cat.width = drawWidth;
-
-        const groundPaddingFix = cat.isGrounded ? 14 : 6;
-        ctx.drawImage(currentImg, cat.x, cat.y + groundPaddingFix, drawWidth, drawHeight);
-    } else {
-        ctx.fillStyle = '#FF9800';
-        ctx.fillRect(cat.x, cat.y, cat.width, cat.height);
+        ctx.drawImage(currentImg, cat.x, cat.y + (cat.isGrounded ? 14 : 6), drawWidth, drawHeight);
     }
-
     ctx.restore();
 }
 
-// --- ১. ইন্ট্রো স্ক্রিন (intro.jpg - ৫ সেকেন্ড) ---
 function drawIntro() {
     ctx.fillStyle = '#000000';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    if (images.intro.complete && images.intro.naturalWidth !== 0) {
-        ctx.drawImage(images.intro, 0, 0, canvas.width, canvas.height);
-    }
+    drawImageProperly(images.intro);
 
     introTimer++;
-
-    if (introTimer >= INTRO_DURATION) {
-        fadeOutIntro = true;
-    }
-
+    if (introTimer >= INTRO_DURATION) fadeOutIntro = true;
     if (fadeOutIntro) {
         fadeProgress += 0.03;
-        if (fadeProgress >= 1) {
-            fadeProgress = 1;
-            fadeOutIntro = false;
-            transitionToAfterIntro();
-        }
+        if (fadeProgress >= 1) { fadeProgress = 1; fadeOutIntro = false; transitionToAfterIntro(); }
         ctx.fillStyle = `rgba(0, 0, 0, ${fadeProgress})`;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 }
 
-// --- ২. আফটার ইন্ট্রো স্ক্রিন (after_intro.jpg - শুধুমাত্র ২ সেকেন্ড স্থায়ী হবে) ---
 function drawAfterIntro() {
-    ctx.fillStyle = '#000000';
+    ctx.fillStyle = '#1b5e20';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+    drawImageProperly(images.afterIntro);
 
-    if (images.afterIntro.complete && images.afterIntro.naturalWidth !== 0) {
-        ctx.drawImage(images.afterIntro, 0, 0, canvas.width, canvas.height);
-    }
-
-    // শুরুতে হালকা ফেড-ইন
     if (fadeInAfterIntro) {
         fadeProgress -= 0.04;
-        if (fadeProgress <= 0) {
-            fadeProgress = 0;
-            fadeInAfterIntro = false;
-        }
+        if (fadeProgress <= 0) { fadeProgress = 0; fadeInAfterIntro = false; }
         ctx.fillStyle = `rgba(0, 0, 0, ${fadeProgress})`;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         return;
     }
 
-    // ২ সেকেন্ড কাউন্টডাউন
     afterIntroTimer++;
-    if (afterIntroTimer >= AFTER_INTRO_DURATION) {
-        fadeOutAfterIntro = true;
-    }
-
-    // ২ সেকেন্ড শেষে হালকা ফেড-আউট হয়ে আগের প্রাকৃতিক ব্যাকগ্রাউন্ডে যাবে
+    if (afterIntroTimer >= AFTER_INTRO_DURATION) fadeOutAfterIntro = true;
     if (fadeOutAfterIntro) {
         fadeProgress += 0.04;
-        if (fadeProgress >= 1) {
-            fadeProgress = 0;
-            fadeOutAfterIntro = false;
-            transitionToLobby();
-        }
+        if (fadeProgress >= 1) { fadeProgress = 0; fadeOutAfterIntro = false; transitionToLobby(); }
         ctx.fillStyle = `rgba(100, 181, 246, ${fadeProgress})`;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 }
 
-// --- ৩. লবি ও গেমওভার স্ক্রিন (আগের প্রাকৃতিক ব্যাকগ্রাউন্ড) ---
-function drawLobby() {
-    drawEnvironment();
-    drawCat();
-    drawTargetRunner();
-}
-
-// --- মেইন গেম লুপ ---
 function update() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    if (gameState === 'INTERACTION') {
-        ctx.fillStyle = '#000';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-    } 
-    else if (gameState === 'INTRO') {
-        drawIntro();
-    } 
-    else if (gameState === 'AFTER_INTRO') {
-        drawAfterIntro();
-    }
-    else if (gameState === 'LOBBY' || gameState === 'GAMEOVER') {
-        drawLobby();
-    } 
+    if (gameState === 'INTRO') drawIntro();
+    else if (gameState === 'AFTER_INTRO') drawAfterIntro();
+    else if (gameState === 'LOBBY' || gameState === 'GAMEOVER') { drawEnvironment(); drawCat(); drawTargetRunner(); }
     else if (gameState === 'PLAYING') {
         drawEnvironment();
-        frameCount++;
-        gameSpeed += 0.0008;
-
-        if (invincibleTimer > 0) {
-            invincibleTimer--;
-        }
-
-        cat.vy += cat.gravity;
-        cat.y += cat.vy;
-        if (cat.y >= groundLineY - cat.height) {
-            cat.y = groundLineY - cat.height;
-            cat.vy = 0;
-            cat.isGrounded = true;
-        }
-
+        frameCount++; gameSpeed += 0.0008;
+        if (invincibleTimer > 0) invincibleTimer--;
+        cat.vy += cat.gravity; cat.y += cat.vy;
+        if (cat.y >= groundLineY - cat.height) { cat.y = groundLineY - cat.height; cat.vy = 0; cat.isGrounded = true; }
         spawnEntities();
 
         for (let i = obstacles.length - 1; i >= 0; i--) {
-            let obs = obstacles[i];
-            obs.x -= gameSpeed;
-            drawCactus(obs);
-
-            if (
-                invincibleTimer === 0 &&
-                cat.x + 24 < obs.x + obs.width - 5 &&
-                cat.x + cat.width - 24 > obs.x + 5 &&
-                cat.y + 15 < obs.y + obs.height &&
-                cat.y + cat.height - 6 > obs.y + 5
-            ) {
-                handleCactusCollision(obs);
-            }
-
+            let obs = obstacles[i]; obs.x -= gameSpeed; drawCactus(obs);
+            if (invincibleTimer === 0 && cat.x + 24 < obs.x + obs.width - 5 && cat.x + cat.width - 24 > obs.x + 5 && cat.y + 15 < obs.y + obs.height && cat.y + cat.height - 6 > obs.y + 5) handleCactusCollision();
             if (obs.x + obs.width < 0) obstacles.splice(i, 1);
         }
 
         ctx.font = '28px Arial';
         for (let i = items.length - 1; i >= 0; i--) {
-            let item = items[i];
-            item.x -= gameSpeed;
-
-            ctx.fillText(item.icon, item.x, item.y);
-
-            if (
-                cat.x + 12 < item.x + item.size &&
-                cat.x + cat.width - 12 > item.x &&
-                cat.y < item.y &&
-                cat.y + cat.height > item.y - item.size
-            ) {
-                playCollectSound(item.points);
-                addScore(item.points, item.x, item.y - 18);
-                items.splice(i, 1);
-                continue;
+            let item = items[i]; item.x -= gameSpeed; ctx.fillText(item.icon, item.x, item.y);
+            if (cat.x + 12 < item.x + item.size && cat.x + cat.width - 12 > item.x && cat.y < item.y && cat.y + cat.height > item.y - item.size) {
+                playCollectSound(item.points); addScore(item.points, item.x, item.y - 18); items.splice(i, 1); continue;
             }
-
             if (item.x < -40) items.splice(i, 1);
         }
 
         for (let i = floatingTexts.length - 1; i >= 0; i--) {
-            let ft = floatingTexts[i];
-            ft.y -= 1.3;
-            ft.alpha -= 0.022;
-            ctx.save();
-            ctx.globalAlpha = Math.max(0, ft.alpha);
-            ctx.fillStyle = ft.color || '#ffeb3b';
-            ctx.strokeStyle = '#000000';
-            ctx.lineWidth = 3.5;
-            ctx.font = 'bold 20px Hind Siliguri, Courier New';
-            ctx.strokeText(ft.text, ft.x, ft.y);
-            ctx.fillText(ft.text, ft.x, ft.y);
-            ctx.restore();
+            let ft = floatingTexts[i]; ft.y -= 1.3; ft.alpha -= 0.022;
+            ctx.save(); ctx.globalAlpha = Math.max(0, ft.alpha); ctx.fillStyle = ft.color || '#ffeb3b'; ctx.strokeStyle = '#000'; ctx.lineWidth = 3.5;
+            ctx.font = 'bold 20px Hind Siliguri, Courier New'; ctx.strokeText(ft.text, ft.x, ft.y); ctx.fillText(ft.text, ft.x, ft.y); ctx.restore();
             if (ft.alpha <= 0) floatingTexts.splice(i, 1);
         }
-
-        drawTargetRunner();
-        drawCat();
+        drawTargetRunner(); drawCat();
     }
-
     requestAnimationFrame(update);
 }
-
 update();
 </script>
 </body>
