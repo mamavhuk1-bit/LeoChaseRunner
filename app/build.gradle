@@ -17,9 +17,9 @@ android {
     signingConfigs {
         release {
             storeFile file("../leo-release.jks")
-            storePassword "leocat2026"
-            keyAlias "leo_key"
-            keyPassword "leocat2026"
+            storePassword System.getenv("KEYSTORE_PASS") ?: "leocat2026"
+            keyAlias System.getenv("KEY_ALIAS") ?: "leo_key"
+            keyPassword System.getenv("KEYSTORE_PASS") ?: "leocat2026"
         }
     }
 

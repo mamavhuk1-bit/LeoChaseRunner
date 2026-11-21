@@ -24,6 +24,9 @@ jobs:
           gradle-version: '8.5'
 
       - name: Build Signed Release APK v5
+        env:
+          KEYSTORE_PASS: ${{ secrets.KEYSTORE_PASS }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         run: gradle assembleRelease
 
       - name: Rename APK to Leo-Cat-v5.0.apk
